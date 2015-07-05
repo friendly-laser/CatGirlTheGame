@@ -35,3 +35,13 @@ function draw_tiles(map)
 		end
 	end
 end
+
+function draw_frame()
+
+	draw_backgrounds()
+	
+	draw_tiles(cLevel.bgmap)
+	draw_tiles(cLevel.tilemap)
+	draw_actors()
+
+end

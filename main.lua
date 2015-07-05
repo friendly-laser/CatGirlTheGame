@@ -4,6 +4,7 @@ require 'level'
 require 'paint'
 require 'phys'
 require 'control'
+require 'camera'
 
 canvas = nil
 cLevel = nil
@@ -50,23 +51,32 @@ function love.load()
 
 	cLevel = load_level("Levels/level1.tmx")
 
+	update_BGQuads(cLevel)
+
 	load_sprite(1, "elvissheet.png", 32, 64)
 
 	cDoll = make_actor(1, 30, -30)
 
 	sound = love.audio.newSource("music.ogg")
 	love.audio.play(sound)
-
+	
+	love.graphics.setBackgroundColor(0,0,0)
 end
 
 function love.draw()
 
 	-- Draw to framebuffer
 	love.graphics.setCanvas(canvas) --This sets the draw target to the canvas
+	canvas:clear(0,0,0)
 
-	draw_tiles(cLevel.bgmap)
-	draw_tiles(cLevel.tilemap)
-	draw_actors()
+	-- Push camera tranform
+	camera:set()
+
+	-- DRAW
+	draw_frame()
+
+	-- Pop camera transform
+	camera:unset()
 
 	-- Blit framebuffer to screen
 	love.graphics.setCanvas() --This sets the target back to the screen
@@ -82,4 +92,6 @@ function love.update(dt)
 	doll_control(cDoll, dt)
 	actor_phys(cDoll, dt)
 
+	camera:follow(cDoll)
+	
 end
