@@ -30,13 +30,13 @@ function load_level(filename)
 		level.tilesets[tileset_id] = load_tileset(short_path, cTileW, cTileH)
 
 		for id, tbl in pairs(tilesets.props) do
-			printf("Have properties for tile %d:\n", id)
+			--printf("Have properties for tile %d:\n", id)
 			for name, value in pairs(tbl) do
-				printf("    %s = %s\n", name, value)
+				--printf("    %s = %s\n", name, value)
 				if name == 'collide' then
 					level.tilesets[tileset_id]['collide'][id+1] = value
 				else
-				printf("    --ignored\n");
+				--printf("    --ignored\n");
 				end
 			end
 		end

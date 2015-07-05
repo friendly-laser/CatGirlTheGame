@@ -97,12 +97,12 @@ local function getTilesets(node)
 
 			for l, lsub in ipairs(sub) do
 				if (lsub.label == "image") then
-					printf("Have image %s\n", lsub.xarg.source)
+					--printf("Have image %s\n", lsub.xarg.source)
 				end
 				if (lsub.label == "tile") then
-					printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
+					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
 					for m, msub in ipairs(lsub[1]) do
-						printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
+						--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
 						if props[lsub.xarg.id] == nil then
 							props[lsub.xarg.id] = {}
 						end
