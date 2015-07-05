@@ -55,7 +55,38 @@ end
  
  
 -- ***** ***** ***** ***** ***** parsing the tilemap xml file
- 
+
+local function getBackgrounds(node)
+	local backgrounds = {}
+	local id = 1
+	print "Loading backgrounds"
+    for k, sub in ipairs(node) do
+        if (sub.label == "imagelayer") then
+			local filename = sub[1].xarg.source
+
+			backgrounds[id] = {}
+			backgrounds[id]['file'] = filename
+			backgrounds[id]['props'] = {}
+
+			for l, lsub in ipairs(sub) do
+				if (lsub.label == "image") then
+					printf("Have image %s\n", lsub.xarg.source)
+				end
+				if (lsub.label == "properties") then
+					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
+					for m, msub in ipairs(lsub) do
+						printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
+						backgrounds[id]['props'][msub.xarg.name] = msub.xarg.value
+					end
+				end
+			end
+
+			id = id + 1
+        end
+    end
+    return backgrounds
+end
+
 local function getTilesets(node)
 	local tilesets = {}
     local tiles = {}
@@ -121,5 +152,6 @@ function TiledMap_Parse(filename)
     local xml = LoadXML(love.filesystem.read(filename))
     local tiles = getTilesets(xml[2])
     local layers = getLayers(xml[2])
-    return tiles, layers
+	local backgrounds = getBackgrounds(xml[2])
+    return tiles, layers, backgrounds
 end

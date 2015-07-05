@@ -4,13 +4,24 @@ function load_level(filename)
 	local level = {}
 
 	level = {}
+	level.backgrounds = {}
 	level.tilesets = {}
 	level.tileset_id = 1
 	level.cols = 3
 	level.rows = 3
 
-    local tilesets,layers = TiledMap_Parse(filename)
+    local tilesets,layers,backgrounds = TiledMap_Parse(filename)
 
+	local bg_id, background
+	for bg_id,background in pairs(backgrounds) do
+		local path = background['file']
+		local short_path = string.gsub(path, "^../", "")
+		local scaleX = background['props']['scaleX'] or 1
+		printf("Loading background %d `%s`\n", bg_id, path);
+
+		level.backgrounds[bg_id] = load_background(short_path, scaleX)
+	end
+	
 	local tileset_id = 1
     for first_gid, path in pairs(tilesets.tiles) do
 		local short_path = string.gsub(path, "^../", "")
@@ -60,6 +71,17 @@ function load_level(filename)
 	return level
 end
 
+function load_background(filename, scaleX)
+	local bg = {}
+
+	bg['image'] = love.graphics.newImage(filename)
+	bg['scaleX'] = scaleX
+
+	bg['image']:setWrap("repeat", "clamp")
+
+	return bg
+end
+
 function load_tileset(filename, tileW, tileH)
 	local ts = {}
 
@@ -104,4 +126,16 @@ function load_tileset(filename, tileW, tileH)
 	--ts['collide'][4] = 'none'
 
 	return ts
+end
+
+-- call this on window resize!
+function update_BGQuads()
+	for id, bg in pairs(cLevel.backgrounds) do
+
+		local image = bg['image']
+
+		bg['quad'] = love.graphics.newQuad(0, 0, cBaseW * cScaleW, cBaseH * cScaleH, image:getWidth(), image:getHeight())
+
+	end
+
 end

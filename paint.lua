@@ -1,3 +1,16 @@
+function draw_backgrounds()
+
+	for id, bg in pairs(cLevel.backgrounds) do
+
+		local x = camera.x * bg.scaleX
+
+		x = math.floor(x)
+		
+		love.graphics.draw(bg.image, bg.quad, x, 0)
+
+	end
+
+end
 
 function draw_actor(actor)
 	sprite = actor.sprite
