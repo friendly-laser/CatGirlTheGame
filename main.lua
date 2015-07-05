@@ -24,7 +24,7 @@ function make_actor(sprite_id, x, y)
 	actor.sprite = sprites[sprite_id]
 	actor.x = x
 	actor.y = y
-	
+
 	actor.anim = 'idle'
 	actor.frame = 1
 	actor.flip = 1
@@ -38,7 +38,6 @@ function make_actor(sprite_id, x, y)
 
 	return actor
 end
-
 
 function love.load()
 
@@ -57,9 +56,10 @@ function love.load()
 
 	cDoll = make_actor(1, 30, -30)
 
-	sound = love.audio.newSource("music.ogg")
+	sound = love.audio.newSource("Music/level1.ogg")
+	sound:setLooping(true)
 	love.audio.play(sound)
-	
+
 	love.graphics.setBackgroundColor(0,0,0)
 end
 
@@ -93,5 +93,5 @@ function love.update(dt)
 	actor_phys(cDoll, dt)
 
 	camera:follow(cDoll)
-	
+
 end
