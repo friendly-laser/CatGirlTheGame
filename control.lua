@@ -6,11 +6,11 @@ function doll_control(actor, dt)
 	actor.force_x = 0
 
 	if love.keyboard.isDown("right") or love.keyboard.isDown("d") then
-		actor.force_x = 1
+		actor.force_x = 2
 		actor.flip = 1
 		actor.anim = 'walk'
 	elseif love.keyboard.isDown("left") or love.keyboard.isDown("a") then
-		actor.force_x = -1
+		actor.force_x = -2
 		actor.flip = -1
 		actor.anim = 'walk'
 	end
