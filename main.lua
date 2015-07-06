@@ -52,7 +52,7 @@ function love.load()
 
 	update_BGQuads(cLevel)
 
-	load_sprite(1, "elvissheet.png", 32, 64)
+	load_sprite(1, "Sprites/Characters/Catgirl/catgirl_both_anim_64x64_sheet.png", 64, 64)
 
 	cDoll = make_actor(1, 30, -30)
 

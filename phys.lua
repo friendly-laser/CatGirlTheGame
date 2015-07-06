@@ -42,9 +42,9 @@ function tile_collide(actor, dx, dy)
 			local mode = tilesets[level.tileset_id]['collide'][tileid]
 
 			local actor_box = {}
-			actor_box.x = new_x - actor.sprite.origin_x
+			actor_box.x = new_x - actor.sprite.origin_x + actor.sprite.bound_x
 			actor_box.y = new_y
-			actor_box.w = 32
+			actor_box.w = 64 - actor.sprite.bound_x * 2
 			actor_box.h = 64
 
 			local tile_box = {}
@@ -84,7 +84,7 @@ function actor_phys(actor, dt)
 
 	-- jump
 	if actor.spring_force > 0 then
-		actor.force_y = -actor.spring_force * 3
+		actor.force_y = -actor.spring_force * 2
 		actor.spring_force = 0
 	end
 
