@@ -19,6 +19,15 @@ function camera:unset()
   love.graphics.pop()
 end
 
+function camera:getTileBounds()
+	local level = cLevel
+
+	self.w = love.graphics.getWidth()
+	self.h = love.graphics.getHeight()
+
+	return tiles_around_actor(level, camera)
+end
+
 function camera:follow(actor)
 	--calc
 	local w = love.graphics.getWidth() / cScaleW

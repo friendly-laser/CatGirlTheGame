@@ -1,3 +1,23 @@
+function tiles_around_actor(level, actor)
+	local atx = math.floor(actor.x / level.tileW)
+	local aty = math.floor(actor.y / level.tileH)
+
+	local atw = math.floor((actor.x+actor.w) / level.tileW)
+	local ath = math.floor((actor.y+actor.h) / level.tileH)
+
+	atx = atx - 1
+	aty = aty - 1
+	atw = atw + 1
+	ath = ath + 1
+
+	if (atx < 1) then atx = 1 end
+	if (aty < 1) then aty = 1 end
+	if (atw > level.cols) then atw = level.cols end
+	if (ath > level.rows) then ath = level.rows end
+
+	return atx,aty,atw,ath
+end
+
 
 function rect_vs_rect(x1,y1,w1,h1, x2,y2,w2,h2)
 	return x1 < x2+w2 and
@@ -32,12 +52,14 @@ function tile_collide(actor, dx, dy)
 	new_y = actor.y + dy
 
 -- Collide with tiles
-	for j = 1, level.rows do
-		for i = 1, level.cols do
+	local tx,ty,tw,th = tiles_around_actor(level, actor);
+
+	for j = ty, th do
+		for i = tx, tw do
 
 			local tileid = level.tilemap[j][i]
-			local x = (i-1) * cTileW
-			local y = (j-1) * cTileH
+			local x = (i-1) * level.tileW
+			local y = (j-1) * level.tileH
 
 			local mode = tilesets[level.tileset_id]['collide'][tileid]
 
