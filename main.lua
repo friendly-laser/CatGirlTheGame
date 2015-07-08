@@ -10,13 +10,14 @@ require 'actor'
 canvas = nil
 cLevel = nil
 cDoll = nil
-cTileW = 8
-cTileH = 8
+
 cBaseW = 320
 cBaseH = 270
-
 cScaleW = 2
 cScaleH = 2
+
+capPhysFPS = 30
+cPhysDelay = 0
 
 function make_actor(sprite_id, x, y)
 	local actor = {}
