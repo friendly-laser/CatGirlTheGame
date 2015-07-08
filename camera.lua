@@ -36,8 +36,8 @@ function camera:follow(actor)
 	local x = actor.x - w / 2
 	local y = actor.y - h / 2
 
-	local max_w = cLevel.cols * cTileW
-	local max_h = cLevel.rows * cTileH
+	local max_w = cLevel.cols * cLevel.tileW
+	local max_h = cLevel.rows * cLevel.tileH
 
 	-- clamp
 	if x < 0 then x = 0 end

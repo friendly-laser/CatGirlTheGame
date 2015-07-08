@@ -56,6 +56,56 @@ end
  
 -- ***** ***** ***** ***** ***** parsing the tilemap xml file
 
+local function getInfo(node)
+	local info = {}
+
+	info['tileW'] = node.xarg['tilewidth']
+	info['tileH'] = node.xarg['tileheight']
+
+	info['cols'] = node.xarg['width']
+	info['rows'] = node.xarg['height']
+
+	return info
+end
+
+local function getObjects(node)
+	local objects = {}
+	local id = 1
+	print "Loading objects"
+    for k, sub in ipairs(node) do
+        if (sub.label == "objectgroup") then
+
+			objects[id] = {}
+			objects[id]['name'] = sub[1].xarg.name
+			objects[id]['type'] = sub[1].xarg.type
+			objects[id]['x'] = sub[1].xarg.x
+			objects[id]['y'] = sub[1].xarg.y
+			objects[id]['w'] = sub[1].xarg.width
+			objects[id]['h'] = sub[1].xarg.height
+			objects[id]['props'] = {}
+
+			--printf("Loaded object %s - %s\n", objects[id]['name'], objects[id]['type']);
+--[[
+			for l, lsub in ipairs(sub) do
+				if (lsub.label == "image") then
+					printf("Have image %s\n", lsub.xarg.source)
+				end
+				if (lsub.label == "properties") then
+					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
+					for m, msub in ipairs(lsub) do
+						printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
+						backgrounds[id]['props'][msub.xarg.name] = msub.xarg.value
+					end
+				end
+			end
+--]]
+			id = id + 1
+        end
+    end
+    return backgrounds
+
+end
+
 local function getBackgrounds(node)
 	local backgrounds = {}
 	local id = 1
@@ -150,8 +200,10 @@ end
  
 function TiledMap_Parse(filename)
     local xml = LoadXML(love.filesystem.read(filename))
+    local info = getInfo(xml[2])
     local tiles = getTilesets(xml[2])
     local layers = getLayers(xml[2])
 	local backgrounds = getBackgrounds(xml[2])
-    return tiles, layers, backgrounds
+	local objects = getObjects(xml[2])
+    return info, tiles, layers, backgrounds, objects
 end

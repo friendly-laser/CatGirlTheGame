@@ -33,8 +33,8 @@ function draw_tiles(map)
 		for i = 1, level.cols do
 
 			local tileid = map[j][i]
-			local x = (i-1) * cTileW
-			local y = (j-1) * cTileH
+			local x = (i-1) * level.tileW
+			local y = (j-1) * level.tileH
 
 			if tileid > 0 then
 

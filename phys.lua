@@ -72,9 +72,9 @@ function tile_collide(actor, dx, dy)
 			local tile_box = {}
 			tile_box.x = x
 			tile_box.y = y
-			tile_box.w = cTileW
-			tile_box.h = cTileH
-			
+			tile_box.w = level.tileW
+			tile_box.h = level.tileH
+
 			local collided = false
 
 			if mode == 'wall' then
