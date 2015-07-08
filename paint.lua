@@ -5,7 +5,7 @@ function draw_backgrounds()
 		local x = camera.x * bg.scaleX
 
 		x = math.floor(x)
-		
+
 		love.graphics.draw(bg.image, bg.quad, x, 0)
 
 	end
@@ -52,7 +52,7 @@ end
 function draw_frame()
 
 	draw_backgrounds()
-	
+
 	draw_tiles(cLevel.bgmap)
 	draw_tiles(cLevel.tilemap)
 	draw_actors()

@@ -43,9 +43,9 @@ function tile_collide(actor, dx, dy)
 
 			local actor_box = {}
 			actor_box.x = new_x - actor.sprite.origin_x + actor.sprite.bound_x
-			actor_box.y = new_y
-			actor_box.w = 64 - actor.sprite.bound_x * 2
-			actor_box.h = 64
+			actor_box.y = new_y + actor.sprite.bound_y
+			actor_box.w = actor.sprite.bound_w
+			actor_box.h = actor.sprite.bound_h
 
 			local tile_box = {}
 			tile_box.x = x
@@ -80,6 +80,29 @@ function tile_collide(actor, dx, dy)
 	actor.y = new_y
 end
 
+function long_collide(actor, mode, dm)
+	local dir = 1
+	local amnt = 1
+
+	if dm == 0 then return end
+
+	amnt = math.abs(dm)
+	if dm < 0 then dir = -1 else dir = 1 end
+
+	if amnt > 4 then amnt = 4 end
+
+	if mode == 'x' then
+		for i = 1, amnt do
+			tile_collide(actor, dir, 0)
+		end
+	end
+	if mode == 'y' then
+		for i = 1, amnt do
+			tile_collide(actor, 0, dir)
+		end
+	end
+end
+
 function actor_phys(actor, dt)
 
 	-- jump
@@ -104,25 +127,25 @@ function actor_phys(actor, dt)
 	long_collide(actor, 'y', actor.force_y)
 end
 
-function long_collide(actor, mode, dm)
-	local dir = 1
-	local amnt = 1
+function phys_step(dt)
+	-- player
+	actor_phys(cDoll, physStep)
 
-	if dm == 0 then return end
+	--enemies
 
-	amnt = math.abs(dm)
-	if dm < 0 then dir = -1 else dir = 1 end
+	--misc
+end
 
-	if amnt > 4 then amnt = 4 end
-	
-	if mode == 'x' then
-		for i = 1, amnt do
-			tile_collide(actor, dir, 0)
-		end
+function phys_loop(dt)
+	local physStep = 1 / capPhysFPS
+
+	cPhysDelay = cPhysDelay + dt
+
+	while (cPhysDelay >= physStep) do
+
+		cPhysDelay = cPhysDelay - physStep
+
+		phys_step(physStep)
+
 	end
-	if mode == 'y' then
-		for i = 1, amnt do
-			tile_collide(actor, 0, dir)
-		end
-	end	
 end

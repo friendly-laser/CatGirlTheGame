@@ -5,6 +5,7 @@ require 'paint'
 require 'phys'
 require 'control'
 require 'camera'
+require 'actor'
 
 canvas = nil
 cLevel = nil
@@ -24,6 +25,9 @@ function make_actor(sprite_id, x, y)
 	actor.sprite = sprites[sprite_id]
 	actor.x = x
 	actor.y = y
+
+	actor.w = actor.sprite['frame_w']
+	actor.h = actor.sprite['frame_h']
 
 	actor.anim = 'idle'
 	actor.frame = 1
@@ -92,7 +96,10 @@ end
 function love.update(dt)
 
 	doll_control(cDoll, dt)
-	actor_phys(cDoll, dt)
+
+	phys_loop(dt)
+
+	actor_apply_anim(cDoll, dt)
 
 	camera:follow(cDoll)
 
