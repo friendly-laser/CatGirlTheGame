@@ -9,8 +9,15 @@ function load_level(filename)
 	level.tileset_id = 1
 	level.cols = 3
 	level.rows = 3
+	level.tileW = 8
+	level.tileH = 8
 
-    local tilesets,layers,backgrounds = TiledMap_Parse(filename)
+    local info,tilesets,layers,backgrounds,objects = TiledMap_Parse(filename)
+
+	level.tileW = info.tileW
+	level.tileH = info.tileH
+	level.cols = info.cols
+	level.rows = info.rows
 
 	local bg_id, background
 	for bg_id,background in pairs(backgrounds) do
@@ -27,7 +34,7 @@ function load_level(filename)
 		local short_path = string.gsub(path, "^../", "")
 		printf("Loading tileset %d `%s` (first_gid=%d)\n", tileset_id, path, first_gid);
 
-		level.tilesets[tileset_id] = load_tileset(short_path, cTileW, cTileH)
+		level.tilesets[tileset_id] = load_tileset(short_path, level.tileW, level.tileH)
 
 		for id, tbl in pairs(tilesets.props) do
 			--printf("Have properties for tile %d:\n", id)

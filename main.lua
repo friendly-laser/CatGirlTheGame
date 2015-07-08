@@ -5,17 +5,19 @@ require 'paint'
 require 'phys'
 require 'control'
 require 'camera'
+require 'actor'
 
 canvas = nil
 cLevel = nil
 cDoll = nil
-cTileW = 8
-cTileH = 8
+
 cBaseW = 320
 cBaseH = 270
-
 cScaleW = 2
 cScaleH = 2
+
+capPhysFPS = 30
+cPhysDelay = 0
 
 function make_actor(sprite_id, x, y)
 	local actor = {}
@@ -24,6 +26,9 @@ function make_actor(sprite_id, x, y)
 	actor.sprite = sprites[sprite_id]
 	actor.x = x
 	actor.y = y
+
+	actor.w = actor.sprite['frame_w']
+	actor.h = actor.sprite['frame_h']
 
 	actor.anim = 'idle'
 	actor.frame = 1
@@ -78,6 +83,8 @@ function love.draw()
 	-- Pop camera transform
 	camera:unset()
 
+	love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 0, 0)
+
 	-- Blit framebuffer to screen
 	love.graphics.setCanvas() --This sets the target back to the screen
 	love.graphics.draw(canvas, 0, 0, 0, cScaleW, cScaleH)
@@ -90,7 +97,10 @@ end
 function love.update(dt)
 
 	doll_control(cDoll, dt)
-	actor_phys(cDoll, dt)
+
+	phys_loop(dt)
+
+	actor_apply_anim(cDoll, dt)
 
 	camera:follow(cDoll)
 

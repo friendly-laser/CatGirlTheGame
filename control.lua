@@ -1,7 +1,6 @@
 
 function doll_control(actor, dt)
 
-	actor.anim_delay = actor.anim_delay - dt
 	actor.anim = 'idle'
 	actor.force_x = 0
 
@@ -26,15 +25,6 @@ function doll_control(actor, dt)
 			actor.spring_force = actor.spring
 			actor.spring = 0
 		end
-	end
-
-	if actor.anim_delay <= 0 then
-		actor.anim_delay = 0.1000
-		actor.frame = actor.frame + 1
-	end
-
-	if actor.frame > actor.sprite['max_frames'][actor.anim] then
-		actor.frame = 1
 	end
 
 end

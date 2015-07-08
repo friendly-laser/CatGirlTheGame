@@ -1,3 +1,23 @@
+function tiles_around_actor(level, actor)
+	local atx = math.floor(actor.x / level.tileW)
+	local aty = math.floor(actor.y / level.tileH)
+
+	local atw = math.floor((actor.x+actor.w) / level.tileW)
+	local ath = math.floor((actor.y+actor.h) / level.tileH)
+
+	atx = atx - 1
+	aty = aty - 1
+	atw = atw + 1
+	ath = ath + 1
+
+	if (atx < 1) then atx = 1 end
+	if (aty < 1) then aty = 1 end
+	if (atw > level.cols) then atw = level.cols end
+	if (ath > level.rows) then ath = level.rows end
+
+	return atx,aty,atw,ath
+end
+
 
 function rect_vs_rect(x1,y1,w1,h1, x2,y2,w2,h2)
 	return x1 < x2+w2 and
@@ -32,27 +52,29 @@ function tile_collide(actor, dx, dy)
 	new_y = actor.y + dy
 
 -- Collide with tiles
-	for j = 1, level.rows do
-		for i = 1, level.cols do
+	local tx,ty,tw,th = tiles_around_actor(level, actor);
+
+	for j = ty, th do
+		for i = tx, tw do
 
 			local tileid = level.tilemap[j][i]
-			local x = (i-1) * cTileW
-			local y = (j-1) * cTileH
+			local x = (i-1) * level.tileW
+			local y = (j-1) * level.tileH
 
 			local mode = tilesets[level.tileset_id]['collide'][tileid]
 
 			local actor_box = {}
 			actor_box.x = new_x - actor.sprite.origin_x + actor.sprite.bound_x
-			actor_box.y = new_y
-			actor_box.w = 64 - actor.sprite.bound_x * 2
-			actor_box.h = 64
+			actor_box.y = new_y + actor.sprite.bound_y
+			actor_box.w = actor.sprite.bound_w
+			actor_box.h = actor.sprite.bound_h
 
 			local tile_box = {}
 			tile_box.x = x
 			tile_box.y = y
-			tile_box.w = cTileW
-			tile_box.h = cTileH
-			
+			tile_box.w = level.tileW
+			tile_box.h = level.tileH
+
 			local collided = false
 
 			if mode == 'wall' then
@@ -65,10 +87,13 @@ function tile_collide(actor, dx, dy)
 					collided = true
 				end
 			end
-			
+
 			if collided == true then
 				new_x = actor.x
 				new_y = actor.y
+				if (dy < 0) then
+					actor.force_y = 0
+				end
 				if (dy > 0) then
 					actor.standing = 1
 				end
@@ -78,6 +103,29 @@ function tile_collide(actor, dx, dy)
 
 	actor.x = new_x
 	actor.y = new_y
+end
+
+function long_collide(actor, mode, dm)
+	local dir = 1
+	local amnt = 1
+
+	if dm == 0 then return end
+
+	amnt = math.abs(dm)
+	if dm < 0 then dir = -1 else dir = 1 end
+
+	if amnt > 4 then amnt = 4 end
+
+	if mode == 'x' then
+		for i = 1, amnt do
+			tile_collide(actor, dir, 0)
+		end
+	end
+	if mode == 'y' then
+		for i = 1, amnt do
+			tile_collide(actor, 0, dir)
+		end
+	end
 end
 
 function actor_phys(actor, dt)
@@ -104,25 +152,25 @@ function actor_phys(actor, dt)
 	long_collide(actor, 'y', actor.force_y)
 end
 
-function long_collide(actor, mode, dm)
-	local dir = 1
-	local amnt = 1
+function phys_step(dt)
+	-- player
+	actor_phys(cDoll, physStep)
 
-	if dm == 0 then return end
+	--enemies
 
-	amnt = math.abs(dm)
-	if dm < 0 then dir = -1 else dir = 1 end
+	--misc
+end
 
-	if amnt > 4 then amnt = 4 end
-	
-	if mode == 'x' then
-		for i = 1, amnt do
-			tile_collide(actor, dir, 0)
-		end
+function phys_loop(dt)
+	local physStep = 1 / capPhysFPS
+
+	cPhysDelay = cPhysDelay + dt
+
+	while (cPhysDelay >= physStep) do
+
+		cPhysDelay = cPhysDelay - physStep
+
+		phys_step(physStep)
+
 	end
-	if mode == 'y' then
-		for i = 1, amnt do
-			tile_collide(actor, 0, dir)
-		end
-	end	
 end
