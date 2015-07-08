@@ -78,6 +78,8 @@ function love.draw()
 	-- Pop camera transform
 	camera:unset()
 
+	love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 0, 0)
+
 	-- Blit framebuffer to screen
 	love.graphics.setCanvas() --This sets the target back to the screen
 	love.graphics.draw(canvas, 0, 0, 0, cScaleW, cScaleH)
