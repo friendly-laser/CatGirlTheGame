@@ -87,10 +87,13 @@ function tile_collide(actor, dx, dy)
 					collided = true
 				end
 			end
-			
+
 			if collided == true then
 				new_x = actor.x
 				new_y = actor.y
+				if (dy < 0) then
+					actor.force_y = 0
+				end
 				if (dy > 0) then
 					actor.standing = 1
 				end
