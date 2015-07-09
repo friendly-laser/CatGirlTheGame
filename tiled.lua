@@ -75,35 +75,40 @@ local function getObjects(node)
     for k, sub in ipairs(node) do
         if (sub.label == "objectgroup") then
 
-			objects[id] = {}
-			objects[id]['name'] = sub[1].xarg.name
-			objects[id]['type'] = sub[1].xarg.type
-			objects[id]['x'] = sub[1].xarg.x
-			objects[id]['y'] = sub[1].xarg.y
-			objects[id]['w'] = sub[1].xarg.width
-			objects[id]['h'] = sub[1].xarg.height
-			objects[id]['props'] = {}
-
-			--printf("Loaded object %s - %s\n", objects[id]['name'], objects[id]['type']);
---[[
 			for l, lsub in ipairs(sub) do
-				if (lsub.label == "image") then
-					printf("Have image %s\n", lsub.xarg.source)
+				--if (lsub.label == "object") then
+				--	printf("Have image %s\n", lsub.xarg.source)
+				--end
+
+				objects[id] = {}
+				objects[id]['name'] = lsub.xarg.name or ""
+				objects[id]['type'] = lsub.xarg.type or ""
+				objects[id]['x'] = lsub.xarg.x
+				objects[id]['y'] = lsub.xarg.y
+				objects[id]['w'] = lsub.xarg.width
+				objects[id]['h'] = lsub.xarg.height
+				objects[id]['props'] = {}
+	
+				printf("Loaded object %s - %s\n", objects[id]['name'], objects[id]['type']);
+
+				if lsub[1] and lsub[1].label == "properties" then
+					for m, msub in ipairs(lsub[1]) do
+						printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
+						objects[id]['props'][msub.xarg.name] = msub.xarg.value
+					end
 				end
+
+				id = id + 1
+			end
+--[[
 				if (lsub.label == "properties") then
 					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
-					for m, msub in ipairs(lsub) do
-						printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
-						backgrounds[id]['props'][msub.xarg.name] = msub.xarg.value
-					end
 				end
 			end
 --]]
-			id = id + 1
         end
     end
-    return backgrounds
-
+    return objects
 end
 
 local function getBackgrounds(node)
