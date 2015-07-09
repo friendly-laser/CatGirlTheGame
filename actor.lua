@@ -14,8 +14,8 @@ function make_actor(sprite_id, x, y)
 	actor.flip = 1
 	actor.anim_delay = 0
 
-	actor.walk_speed = 2
-	actor.air_speed = 1
+	actor.walk_speed = 5
+	actor.air_speed = 4
 
 	actor.force_x = 0
 	actor.force_y = 0
