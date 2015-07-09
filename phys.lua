@@ -1,3 +1,7 @@
+COLLISION_NONE = 0
+COLLISION_WALL = 0xFF
+COLLISION_CLOUD = 0x01
+
 function tiles_around_actor(level, actor)
 	local atx = math.floor(actor.x / level.tileW)
 	local aty = math.floor(actor.y / level.tileH)
@@ -35,10 +39,10 @@ function box_above_box(box1, box2)
 	return box1.y + box1.h <= box2.y + 1
 end
 function box_leftof_box(box1, box2)
-
+	return box1.x + box1.w <= box2.x + 1
 end
 function box_rightof_box(box1, box2)
-
+	return box2.x + box2.w <= box1.x + 1
 end
 
 function tile_collide(actor, dx, dy)
@@ -57,11 +61,13 @@ function tile_collide(actor, dx, dy)
 	for j = ty, th do
 		for i = tx, tw do
 
-			local tileid = level.tilemap[j][i]
+			--local tileid = level.tilemap[j][i]
+			--local mode = tilesets[level.tileset_id]['collide'][tileid]
+			local mode = level.colmap[j][i]
+
 			local x = (i-1) * level.tileW
 			local y = (j-1) * level.tileH
 
-			local mode = tilesets[level.tileset_id]['collide'][tileid]
 
 			local actor_box = {}
 			actor_box.x = new_x - actor.sprite.origin_x + actor.sprite.bound_x
@@ -84,6 +90,16 @@ function tile_collide(actor, dx, dy)
 			end
 			if mode == 'cloud' then
 				if actor.force_y > 0 and box_above_box(actor_box, tile_box) and box_vs_box(actor_box, tile_box) then
+					collided = true
+				end
+			end
+			if mode == 'lfield' then
+				if actor.force_x > 0 and box_leftof_box(actor_box, tile_box) and box_vs_box(actor_box, tile_box) then
+					collided = true
+				end
+			end
+			if mode == 'rfield' then
+				if actor.force_x < 0 and box_rightof_box(actor_box, tile_box) and box_vs_box(actor_box, tile_box) then
 					collided = true
 				end
 			end
@@ -130,11 +146,12 @@ end
 
 function actor_phys(actor, dt)
 
-	-- jump
+	--[[ jump
 	if actor.spring_force > 0 then
 		actor.force_y = -actor.spring_force * 2
 		actor.spring_force = 0
 	end
+	--]]
 
 	-- gravity
 	if actor.force_y < 8 then

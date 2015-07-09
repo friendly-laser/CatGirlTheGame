@@ -58,7 +58,11 @@ function draw_frame()
 	draw_backgrounds()
 
 	draw_tiles(cLevel.bgmap)
+	draw_tiles(cLevel.bgmap2)
 	draw_tiles(cLevel.tilemap)
+
 	draw_actors()
+
+	draw_tiles(cLevel.fgmap)
 
 end

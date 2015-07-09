@@ -28,53 +28,102 @@ function load_level(filename)
 
 		level.backgrounds[bg_id] = load_background(short_path, scaleX)
 	end
-	
-	local tileset_id = 1
-    for first_gid, path in pairs(tilesets.tiles) do
+
+    for tileset_id, ts in pairs(tilesets) do
+    	local path = ts['file']
 		local short_path = string.gsub(path, "^../", "")
+		local first_gid = ts['first_gid'] 
 		printf("Loading tileset %d `%s` (first_gid=%d)\n", tileset_id, path, first_gid);
 
-		level.tilesets[tileset_id] = load_tileset(short_path, level.tileW, level.tileH)
+		level.tilesets[tileset_id] = load_tileset(short_path, ts['tile_w'], ts['tile_h'])
 
-		for id, tbl in pairs(tilesets.props) do
+		--level.tilesets[tileset_id]['first_gid'] = first_gid
+
+		for id, tbl in pairs(ts.props) do
 			--printf("Have properties for tile %d:\n", id)
 			for name, value in pairs(tbl) do
 				--printf("    %s = %s\n", name, value)
-				if name == 'collide' then
-					level.tilesets[tileset_id]['collide'][id+1] = value
-				else
+				--if name == 'collide' then
+				level.tilesets[tileset_id][name][id+1] = value
+				--else
 				--printf("    --ignored\n");
-				end
+				--end
 			end
 		end
-		
+
 		tileset_id = tileset_id + 1
     end
 
 	level.rows = layers.height
 	level.cols = layers.width
+	level.colmap = make_matrix(layers.width, layers.height)
 	level.bgmap = make_matrix(layers.width, layers.height)
+	level.bgmap2 = make_matrix(layers.width, layers.height)
+	level.fgmap = make_matrix(layers.width, layers.height)
 	level.tilemap = make_matrix(layers.width, layers.height)
+
+	local col = level.colmap
+
+	--meh hack
+	tileset_id = 1
 
 	for layerid,layer in pairs(layers) do
 		local map = nil
 
 		if type(layerid) == "number" and tonumber(layerid) == 1 then
+			printf("Found layer: %d (BGMAP)\n", layerid)
 			map = level.bgmap
 		end
 		if type(layerid) == "number" and tonumber(layerid) == 2 then
+			printf("Found layer: %d (BGMAP2)\n", layerid)
+			map = level.bgmap2
+		end
+		if type(layerid) == "number" and tonumber(layerid) == 3 then
+			printf("Found layer: %d (TILEMAP)\n", layerid)
 			map = level.tilemap
+		end
+		if type(layerid) == "number" and tonumber(layerid) == 4 then
+			printf("Found layer: %d (FGMAP)\n", layerid)
+			map = level.fgmap
 		end
 
 		if (type(layer) == "table") then for ty,row in pairs(layer) do
 			if (type(row) == "table") then for tx,t in pairs(row) do 
-	
+
 				map[ty + 1][tx + 1] = t -- lua arrays are 1-based, so we add +1
+
+				local test = level.tilesets[tileset_id]['collide'][t]
+
+				if not(test == "none") or col[ty + 1][tx + 1] == "none" then
+					col[ty + 1][tx + 1] = test
+					--printf("Setting %d, %d to %s\n", tx, ty, test)
+				end
 
 			end end
 		end end
 	end
+--[[
+	local obj_id, object
+	for obj_id,object in pairs(objects) do
 
+		printf("Loading object %d `%s` (props:%p)\n", obj_id, object.name, object.props);
+
+		if object.props.collide then
+		
+			local i, j, x, y
+			x = math.floor(object.x)
+			y = math.floor(object.y)
+			for j = 0, object.h-1 do		
+			for i = 0, object.w-1 do
+
+				col[y + j][x + i] = 
+				object.props.collide
+
+			end end
+		end
+
+	end
+--]]
 	return level
 end
 
@@ -124,8 +173,8 @@ function load_tileset(filename, tileW, tileH)
 		x = x + tileW
 		gid = gid + 1
 	end
-	
-	ts['collide'][0] = 'none'
+
+	ts['collide'][0] = 'none' -- TODO: investigate this
 
 	return ts
 end
@@ -139,4 +188,54 @@ function update_BGQuads()
 		bg['quad'] = love.graphics.newQuad(0, 0, cBaseW * cScaleW, cBaseH * cScaleH, image:getWidth(), image:getHeight())
 
 	end
+end
+
+-- call sometimes
+delays = {}
+function anim_tiles(map, dt)
+	local i, j
+
+	--printf("Eat %f\n", dt);
+	
+	local tileset_id = 1
+
+	local ts = cLevel.tilesets[tileset_id]
+
+	for j = 1, 100 do
+		for i = 1, 100 do
+
+			local t = map[j][i]
+
+			if ts['anim_delay'][t] then
+
+				local tid = j * 100 + i
+				
+				if not(delays[tid]) then
+					delays[tid] = ts['anim_delay'][t]
+				end
+
+				delays[tid] = delays[tid] - dt
+
+				if delays[tid] <= 0 then
+					delays[tid] = ts['anim_delay'][t]
+
+				local mov_ind
+
+				mov_ind = ts['tile_pitch'] * ts['anim_y'][t] + ts['anim_x'][t]			
+
+				--printf("!!!!!! mov_ind = %d [%f]\n", mov_ind, ts['anim_delay'][t])
+
+				map[j][i] = t + mov_ind
+				
+				end
+			end
+
+		end
+	end
+end
+function anim_all_tiles(dt)
+	anim_tiles(cLevel.bgmap, dt)
+	anim_tiles(cLevel.bgmap2, dt)
+	anim_tiles(cLevel.tilemap, dt)
+	anim_tiles(cLevel.fgmap, dt)
 end
