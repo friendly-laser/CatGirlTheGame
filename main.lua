@@ -15,7 +15,7 @@ canvas = nil
 cLevel = nil
 cDoll = nil
 
-cBaseW = 320
+cBaseW = 480
 cBaseH = 270
 cScaleW = 2
 cScaleH = 2
