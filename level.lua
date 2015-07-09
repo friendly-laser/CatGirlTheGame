@@ -95,8 +95,16 @@ function load_tileset(filename, tileW, tileH)
 	ts['image'] = love.graphics.newImage(filename)
 	ts['quads'] = {}
 	ts['collide'] = {}
+	ts['anim_x'] = {}
+	ts['anim_y'] = {}
+	ts['anim_delay'] = {}
+
+	ts['tile_w'] = tileW
+	ts['tile_h'] = tileH
 
 	local tilesetW, tilesetH = ts['image']:getWidth(), ts['image']:getHeight()
+
+	ts['tile_pitch'] = math.floor(tilesetW / tileW)
 
 	local gid = 1
 	local x = 0
@@ -116,6 +124,8 @@ function load_tileset(filename, tileW, tileH)
 		x = x + tileW
 		gid = gid + 1
 	end
+	
+	ts['collide'][0] = 'none'
 
 	return ts
 end

@@ -139,11 +139,16 @@ end
 
 local function getTilesets(node)
 	local tilesets = {}
-    local tiles = {}
-	local props = {}
+	local i = 1
     for k, sub in ipairs(node) do
         if (sub.label == "tileset") then
-            tiles[tonumber(sub.xarg.firstgid)] = sub[1].xarg.source
+			local ts = {}
+
+			ts['first_gid'] = tonumber(sub.xarg.firstgid)
+			ts['tile_w'] = tonumber(sub.xarg.tilewidth)
+			ts['tile_h'] = tonumber(sub.xarg.tileheight)
+			ts['file'] = sub[1].xarg.source
+			ts['props'] = {}
 
 			for l, lsub in ipairs(sub) do
 				if (lsub.label == "image") then
@@ -153,17 +158,18 @@ local function getTilesets(node)
 					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
 					for m, msub in ipairs(lsub[1]) do
 						--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
-						if props[lsub.xarg.id] == nil then
-							props[lsub.xarg.id] = {}
+						if ts.props[lsub.xarg.id] == nil then
+							ts.props[lsub.xarg.id] = {}
 						end
-						props[lsub.xarg.id][msub.xarg.name] = msub.xarg.value
+						ts.props[lsub.xarg.id][msub.xarg.name] = msub.xarg.value
 					end
 				end
 			end
+
+			tilesets[i] = ts
+			i = i + 1
         end
     end
-	tilesets.props = props
-	tilesets.tiles = tiles
     return tilesets
 end
 
