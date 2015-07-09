@@ -110,27 +110,12 @@ function load_tileset(filename, tileW, tileH)
 		if (y + tileH > tilesetH) then
 			break
 		end
-		
-		if gid == 385 then
-			printf("QUAD for tile %d is %d,%d-- %d,%d\n", gid, x, y, x+tileW, y+tileH);
-		end
-		
+
 		ts['quads'][gid] = love.graphics.newQuad(x, y, tileW, tileH, tilesetW, tilesetH)
 		ts['collide'][gid] = 'none'
 		x = x + tileW
 		gid = gid + 1
 	end
-
-	--ts['quads'][1] = love.graphics.newQuad(0,  0, tileW, tileH, tilesetW, tilesetH)
-	--ts['quads'][2] = love.graphics.newQuad(64, 0, tileW, tileH, tilesetW, tilesetH)
-	--ts['quads'][3] = love.graphics.newQuad(0, 64, tileW, tileH, tilesetW, tilesetH)
-	--ts['quads'][4] = love.graphics.newQuad(64, 64, tileW, tileH, tilesetW, tilesetH)
-
-	--ts['collide'][385] = 'wall'
-	--ts['collide'][449] = 'wall'
-	--ts['collide'][2] = 'cloud'
-	--ts['collide'][3] = 'none'
-	--ts['collide'][4] = 'none'
 
 	return ts
 end
@@ -144,5 +129,4 @@ function update_BGQuads()
 		bg['quad'] = love.graphics.newQuad(0, 0, cBaseW * cScaleW, cBaseH * cScaleH, image:getWidth(), image:getHeight())
 
 	end
-
 end
