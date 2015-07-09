@@ -40266,7 +40266,7 @@
     <property name="collide" value="wall"/>
    </properties>
   </object>
-  <object name="Start" type="Points" x="16" y="16" width="40" height="32"/>
+  <object name="Start" type="Points" x="32" y="352" width="32" height="64"/>
   <object x="336" y="360" width="24" height="16">
    <properties>
     <property name="collide" value="wall"/>

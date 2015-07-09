@@ -102,28 +102,37 @@ function load_level(filename)
 			end end
 		end end
 	end
---[[
+
 	local obj_id, object
 	for obj_id,object in pairs(objects) do
 
 		printf("Loading object %d `%s` (props:%p)\n", obj_id, object.name, object.props);
 
+		if object.name == "Start" then
+
+			level.start_x = object.x
+			level.start_y = object.y
+
+		end
+
 		if object.props.collide then
 		
-			local i, j, x, y
-			x = math.floor(object.x)
-			y = math.floor(object.y)
-			for j = 0, object.h-1 do		
-			for i = 0, object.w-1 do
+			local i, j, x, y, w, h
+			x = math.floor(object.x / level.tileW) + 1
+			y = math.floor(object.y / level.tileH) + 1
+			w = math.floor(object.w / level.tileW)
+			h = math.floor(object.h / level.tileH)
 
-				col[y + j][x + i] = 
-				object.props.collide
+			for j = 0, h-1 do
+			for i = 0, w-1 do
+
+				col[y + j][x + i] = object.props.collide
 
 			end end
 		end
 
 	end
---]]
+
 	return level
 end
 

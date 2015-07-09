@@ -91,7 +91,7 @@ function restart_level(filename)
 
 	update_BGQuads(cLevel)
 
-	cDoll = make_actor("catgirl", 30, -30)
+	cDoll = make_actor("catgirl", cLevel.start_x, cLevel.start_y)
 
 	camera:follow(cDoll)
 
