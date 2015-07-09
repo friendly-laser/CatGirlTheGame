@@ -11,6 +11,29 @@ function printf(s, ...)
 	return io.write(s:format(...))
 end
 
+function dumps(o)
+	if o == nil then
+		printf("NULL");
+	end
+	if type(o) == "table" then
+		printf("{ ");
+		local k,v
+		for k,v in pairs(o) do
+			dumps(k)
+			printf(": ")
+			dumps(v)
+			printf(", ")
+		end
+		printf("} ");
+	end
+	if type(o) == "string" then
+		printf("\"%s\"", o)
+	end
+	if type(o) == "number" then
+		printf(o)
+	end
+end
+
 function make_matrix(w, h)
 	local grid = {}
 	for j = 1, h do
