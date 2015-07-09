@@ -34,8 +34,18 @@ function doll:control()
 	end
 
 --gamepad
-	if not(cGamepad == nil) and cGamepad.isConnected == true then
-		printf("Doing gamepad...\n");
+	if cGamepad ~= nil and cGamepad:isConnected() == true then
+		-- getGamepadAxis returns a value between -1 and 1.
+		-- It returns 0 when it is at rest
+
+		self.intent_x = cGamepad:getGamepadAxis("leftx")
+		self.intent_y = cGamepad:getGamepadAxis("lefty")
+
+		if cGamepad:isGamepadDown("a") then
+			self.intent_spring = 1
+		else
+			self.intent_spring = 0
+		end
 	end
 end
 
