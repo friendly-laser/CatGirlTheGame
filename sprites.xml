@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sprites>
+	<sprite name="catgirl" image="Sprites/Characters/Catgirl/catgirl_both_anim_64x64_sheet.png" framewidth="64" frameheight="64">
+		<box x="20" y="24" w="24" h="40"/>
+		<animation name="idle" delay="0.2000" row="1" col="1" frames="10"/>
+		<animation name="walk" delay="0.1000" row="2" col="1" frames="8"/>
+		<animation name="jump" delay="0.1000" row="2" col="3" frames="1"/>
+		<animation name="rise" delay="0.1000" row="2" col="3" frames="1"/>
+		<animation name="vrise" delay="0.1000" row="2" col="3" frames="1"/>
+		<animation name="fall" delay="0.1000" row="2" col="3" frames="1"/>
+		<animation name="land" delay="0.1000" row="2" col="3" frames="1"/>
+	</sprite>
+</sprites>
