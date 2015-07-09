@@ -213,6 +213,7 @@ local function getLayers(node)
             local layer = {}
             table.insert(layers,layer)
 			layer.name = sub.xarg.name
+			layer.visible = tonumber(sub.xarg.visible)
 			--~ print("layername",layer.name)
             width = tonumber(sub.xarg.width)
             i = 0

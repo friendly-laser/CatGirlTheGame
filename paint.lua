@@ -59,12 +59,18 @@ function draw_frame()
 
 	draw_backgrounds()
 
-	for id = 1, table.getn(cLevel.layers) - 1 do
-		draw_tiles(cLevel.layers[id])
+	local last_layer = cLevel.num_layers
+
+	for id = 1, last_layer - 1 do
+		if cLevel.layers_visible[id] == 1 then
+			draw_tiles(cLevel.layers[id])
+		end
 	end
 
 	draw_actors()
 
-	draw_tiles(cLevel.layers[table.getn(cLevel.layers)])
+	if cLevel.layers_visible[last_layer] == 1 then
+		draw_tiles(cLevel.layers[last_layer])
+	end
 
 end

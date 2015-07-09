@@ -7,6 +7,7 @@ function load_level(filename)
 	level.backgrounds = {}
 	level.tilesets = {}
 	level.layers = {}
+	level.layers_visible = {}
 	level.tileset_id = 1
 	level.cols = 3
 	level.rows = 3
@@ -85,6 +86,7 @@ function load_level(filename)
 		local map = nil
 
 		if type(layerid) == "number" then
+			level.layers_visible[tonumber(layerid)] = layer.visible or 1
 			level.layers[tonumber(layerid)] = make_matrix(layers.width, layers.height)
 			map = level.layers[tonumber(layerid)]
 		end
@@ -114,6 +116,12 @@ function load_level(filename)
 
 			end end
 		end end
+	end
+
+	-- hack: "remove" invisible layers from top of the layer stack
+	level.num_layers = table.getn(level.layers)
+	while level.layers_visible[level.num_layers] == 0 do
+		level.num_layers = level.num_layers - 1
 	end
 
 	local obj_id, object
