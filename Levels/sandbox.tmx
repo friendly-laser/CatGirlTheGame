@@ -20,12 +20,12 @@
   <image source="../Sprites/sandbox/colliders.png" width="128" height="64"/>
   <tile id="0">
    <properties>
-    <property name="collider" value="wall"/>
+    <property name="collide" value="wall"/>
    </properties>
   </tile>
   <tile id="1">
    <properties>
-    <property name="collider" value="cloud"/>
+    <property name="collide" value="cloud"/>
    </properties>
   </tile>
  </tileset>
