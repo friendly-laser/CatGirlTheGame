@@ -57,12 +57,12 @@ function draw_frame()
 
 	draw_backgrounds()
 
-	draw_tiles(cLevel.bgmap)
-	draw_tiles(cLevel.bgmap2)
-	draw_tiles(cLevel.tilemap)
+	for id = 1, table.getn(cLevel.layers) - 1 do
+		draw_tiles(cLevel.layers[id])
+	end
 
 	draw_actors()
 
-	draw_tiles(cLevel.fgmap)
+	draw_tiles(cLevel.layers[table.getn(cLevel.layers)])
 
 end

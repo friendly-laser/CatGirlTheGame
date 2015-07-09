@@ -30,7 +30,7 @@ function dumps(o)
 		printf("\"%s\"", o)
 	end
 	if type(o) == "number" then
-		printf(o)
+		printf("%d", o)
 	end
 end
 

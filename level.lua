@@ -6,6 +6,7 @@ function load_level(filename)
 	level = {}
 	level.backgrounds = {}
 	level.tilesets = {}
+	level.layers = {}
 	level.tileset_id = 1
 	level.cols = 3
 	level.rows = 3
@@ -57,10 +58,6 @@ function load_level(filename)
 	level.rows = layers.height
 	level.cols = layers.width
 	level.colmap = make_matrix(layers.width, layers.height)
-	level.bgmap = make_matrix(layers.width, layers.height)
-	level.bgmap2 = make_matrix(layers.width, layers.height)
-	level.fgmap = make_matrix(layers.width, layers.height)
-	level.tilemap = make_matrix(layers.width, layers.height)
 
 	local col = level.colmap
 
@@ -70,21 +67,9 @@ function load_level(filename)
 	for layerid,layer in pairs(layers) do
 		local map = nil
 
-		if type(layerid) == "number" and tonumber(layerid) == 1 then
-			printf("Found layer: %d (BGMAP)\n", layerid)
-			map = level.bgmap
-		end
-		if type(layerid) == "number" and tonumber(layerid) == 2 then
-			printf("Found layer: %d (BGMAP2)\n", layerid)
-			map = level.bgmap2
-		end
-		if type(layerid) == "number" and tonumber(layerid) == 3 then
-			printf("Found layer: %d (TILEMAP)\n", layerid)
-			map = level.tilemap
-		end
-		if type(layerid) == "number" and tonumber(layerid) == 4 then
-			printf("Found layer: %d (FGMAP)\n", layerid)
-			map = level.fgmap
+		if type(layerid) == "number" then
+			level.layers[tonumber(layerid)] = make_matrix(layers.width, layers.height)
+			map = level.layers[tonumber(layerid)]
 		end
 
 		if (type(layer) == "table") then for ty,row in pairs(layer) do
@@ -243,8 +228,7 @@ function anim_tiles(map, dt)
 	end
 end
 function anim_all_tiles(dt)
-	anim_tiles(cLevel.bgmap, dt)
-	anim_tiles(cLevel.bgmap2, dt)
-	anim_tiles(cLevel.tilemap, dt)
-	anim_tiles(cLevel.fgmap, dt)
+	for id = 1, table.getn(cLevel.layers) do
+		anim_tiles(cLevel.layers[id], dt)
+	end
 end
