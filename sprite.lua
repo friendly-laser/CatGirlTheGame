@@ -19,6 +19,10 @@ function load_sprite(id, filename, tileW, tileH)
 	fill_anim_range(spr, 'idle', 0, 0, tileW, tileH, 10, 0.2000)
 	fill_anim_range(spr, 'walk', 0, 64, tileW, tileH, 8, 0.1000)
 
+	fill_anim_range(spr, 'rise', 64, 64, tileW, tileH, 1, 0.1000)
+	fill_anim_range(spr, 'vrise', 64, 64, tileW, tileH, 1, 0.1000)
+	fill_anim_range(spr, 'fall', 64, 64, tileW, tileH, 1, 0.1000)
+
 	spr['frame_w'] = tileW
 	spr['frame_h'] = tileH
 

@@ -103,7 +103,7 @@ end
 function doll:apply(actor)
 
 	actor.force_x = 0
-	actor.anim = 'idle'
+	--actor.anim = 'idle'
 
 	local x_factor = self.ball_x
 	local move_speed = actor.walk_speed
@@ -113,13 +113,15 @@ function doll:apply(actor)
 	end
 
 	if self.ball_x > 0 then
-		actor.force_x = round(x_factor * move_speed)
+		actor.force_x = math.floor(x_factor * move_speed)
+		if actor.force_x == 0 then actor.force_x = 1 end
 		actor.flip = 1
-		actor.anim = 'walk'
+		--actor.anim = 'walk'
 	elseif self.ball_x < 0 then
-		actor.force_x = round(x_factor * move_speed)
+		actor.force_x = math.ceil(x_factor * move_speed)
+		if actor.force_x == 0 then actor.force_x = -1 end
 		actor.flip = -1
-		actor.anim = 'walk'
+		--actor.anim = 'walk'
 	end
 
 	if self.spring_release > 0 then

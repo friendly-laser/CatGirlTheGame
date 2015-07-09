@@ -28,6 +28,53 @@ end
 
 function actor_apply_anim(actor, dt)
 
+	local anim
+
+	-- select animation
+	if actor.standing == 1 then
+		if actor.force_x ~= 0 then
+			-- moving on the ground
+			anim = "walk"
+		else
+			-- standing on the ground
+			anim = "idle"
+		end
+	else
+		if actor.force_y < 0 then
+			--rising
+			if actor.force_x ~= 0 then
+				--rising sideways
+				anim = "rise"
+			else
+				--rising vertically
+				anim = "vrise"
+			end
+		else
+			--falling
+			anim = "fall"
+		end
+	end
+
+	-- change animation
+	if actor.anim ~= anim then
+		--printf("Setting anim `%s` (was %s), frame=%d\n", anim, actor.anim, 1)
+		actor.anim = anim
+		actor.frame = 1
+		actor.anim_delay = actor.sprite['delays'][actor.anim][actor.frame]
+	end
+
+	-- speedup/slowdown walking animation by move speed
+	if actor.anim == "walk" then
+		local walk_abs = math.abs(actor.force_x)
+		if walk_abs > 4 then
+			dt = dt * 2
+		end
+		if walk_abs < 1 then
+			dt = dt / 4
+		end
+	end
+
+	--move to next frame
 	actor.anim_delay = actor.anim_delay - dt
 
 	if actor.anim_delay <= 0 then
@@ -40,14 +87,6 @@ function actor_apply_anim(actor, dt)
 
 	if actor.anim_delay <= 0 then
 		actor.anim_delay = actor.sprite['delays'][actor.anim][actor.frame]
-	end
-
-	if actor.standing == 0 then
-		--if actor.force_y < 0 then
-			actor.frame = 3
-		--else
-			--actor.frame = 4
-		--end
 	end
 
 end

@@ -130,7 +130,7 @@ function long_collide(actor, mode, dm)
 	amnt = math.abs(dm)
 	if dm < 0 then dir = -1 else dir = 1 end
 
-	if amnt > 4 then amnt = 4 end
+	--if amnt > 8 then amnt = 8 end
 
 	if mode == 'x' then
 		for i = 1, amnt do
