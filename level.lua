@@ -23,6 +23,8 @@ function load_level(filename)
 	level.cols = info.cols
 	level.rows = info.rows
 
+	level.giant_ref_table = {}
+
 	local bg_id, background
 	for bg_id,background in pairs(backgrounds) do
 		local path = background['file']
@@ -36,36 +38,44 @@ function load_level(filename)
     for tileset_id, ts in pairs(tilesets) do
     	local path = ts['file']
 		local short_path = string.gsub(path, "^../", "")
-		local first_gid = ts['first_gid'] 
+		local first_gid = ts['first_gid']
+
 		printf("Loading tileset %d `%s` (first_gid=%d)\n", tileset_id, path, first_gid);
 
-		level.tilesets[tileset_id] = load_tileset(short_path, ts['tile_w'], ts['tile_h'])
+		level.tilesets[tileset_id] = load_tileset(short_path, ts['tile_w'], ts['tile_h'], first_gid)
 
-		--level.tilesets[tileset_id]['first_gid'] = first_gid
+		local last_gid = first_gid + level.tilesets[tileset_id]['tiles_total']
+
+		level.tilesets[tileset_id]['first_gid'] = first_gid
+		level.tilesets[tileset_id]['last_gid'] = last_gid
 
 		for id, tbl in pairs(ts.props) do
 			--printf("Have properties for tile %d:\n", id)
 			for name, value in pairs(tbl) do
 				--printf("    %s = %s\n", name, value)
-				--if name == 'collide' then
 				level.tilesets[tileset_id][name][id+1] = value
-				--else
-				--printf("    --ignored\n");
-				--end
 			end
 		end
 
+		--stuff giant ref table
+		local last_gid = level.tilesets[tileset_id]['last_gid']
+		for gid = first_gid, last_gid do
+			level.giant_ref_table[gid] = tileset_id
+		end 
+
 		tileset_id = tileset_id + 1
     end
+
+	--hack "tile 0 (emptyness)" refs to tileset 1
+	-- we will also have some hacks for "tile 0" in each tileset
+	-- so it's all good
+	level.giant_ref_table[0] = 1
 
 	level.rows = layers.height
 	level.cols = layers.width
 	level.colmap = make_matrix(layers.width, layers.height)
 
 	local col = level.colmap
-
-	--meh hack
-	tileset_id = 1
 
 	for layerid,layer in pairs(layers) do
 		local map = nil
@@ -80,11 +90,22 @@ function load_level(filename)
 
 				map[ty + 1][tx + 1] = t -- lua arrays are 1-based, so we add +1
 
-				local test = level.tilesets[tileset_id]['collide'][t]
+				-- empty tile
+				if t == 0 then
 
-				if not(test == "none") or col[ty + 1][tx + 1] == "none" then
-					col[ty + 1][tx + 1] = test
-					--printf("Setting %d, %d to %s\n", tx, ty, test)
+				else
+
+					local tileset_id = level.giant_ref_table[t]
+
+					--printf("Got tile %d ==> tileset %d\n", t, tileset_id);
+
+					local test = level.tilesets[tileset_id]['collide'][t]
+
+					if not(test == "none") or col[ty + 1][tx + 1] == "none" then
+						col[ty + 1][tx + 1] = test
+						--printf("Setting %d, %d to %s\n", tx, ty, test)
+					end
+
 				end
 
 			end end
@@ -104,7 +125,7 @@ function load_level(filename)
 		end
 
 		if object.props.collide then
-		
+
 			local i, j, x, y, w, h
 			x = math.floor(object.x / level.tileW) + 1
 			y = math.floor(object.y / level.tileH) + 1
@@ -135,7 +156,7 @@ function load_background(filename, scaleX)
 	return bg
 end
 
-function load_tileset(filename, tileW, tileH)
+function load_tileset(filename, tileW, tileH, first_gid)
 	local ts = {}
 
 	ts['image'] = love.graphics.newImage(filename)
@@ -151,8 +172,11 @@ function load_tileset(filename, tileW, tileH)
 	local tilesetW, tilesetH = ts['image']:getWidth(), ts['image']:getHeight()
 
 	ts['tile_pitch'] = math.floor(tilesetW / tileW)
+	ts['tiles_total'] = ts['tile_pitch'] * math.floor(tilesetH / tileH)
 
-	local gid = 1
+	--printf("For tileset %s, chose pitch %d, total %d\n", filename, ts['tile_pitch'], ts['tiles_total'])
+
+	local gid = first_gid or 1
 	local x = 0
 	local y = 0
 	while true do
@@ -193,20 +217,20 @@ function anim_tiles(map, dt)
 	local i, j
 
 	--printf("Eat %f\n", dt);
-	
-	local tileset_id = 1
-
-	local ts = cLevel.tilesets[tileset_id]
 
 	for j = 1, 100 do
 		for i = 1, 100 do
 
 			local t = map[j][i]
 
+			local tileset_id = cLevel.giant_ref_table[t]
+
+			local ts = cLevel.tilesets[tileset_id]
+
 			if ts['anim_delay'][t] then
 
 				local tid = j * 100 + i
-				
+
 				if not(delays[tid]) then
 					delays[tid] = ts['anim_delay'][t]
 				end
@@ -223,7 +247,7 @@ function anim_tiles(map, dt)
 				--printf("!!!!!! mov_ind = %d [%f]\n", mov_ind, ts['anim_delay'][t])
 
 				map[j][i] = t + mov_ind
-				
+
 				end
 			end
 
@@ -231,7 +255,9 @@ function anim_tiles(map, dt)
 	end
 end
 function anim_all_tiles(dt)
-	for id = 1, table.getn(cLevel.layers) do
+	local num_layers = table.getn(cLevel.layers)
+
+	for id = 1, num_layers do
 		anim_tiles(cLevel.layers[id], dt)
 	end
 end

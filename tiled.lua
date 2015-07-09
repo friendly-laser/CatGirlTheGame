@@ -163,10 +163,11 @@ local function getTilesets(node)
 					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
 					for m, msub in ipairs(lsub[1]) do
 						--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
-						if ts.props[lsub.xarg.id] == nil then
-							ts.props[lsub.xarg.id] = {}
+						local tileid = lsub.xarg.id + ts['first_gid'] - 1
+						if ts.props[tileid] == nil then
+							ts.props[tileid] = {}
 						end
-						ts.props[lsub.xarg.id][msub.xarg.name] = msub.xarg.value
+						ts.props[tileid][msub.xarg.name] = msub.xarg.value
 					end
 				end
 			end

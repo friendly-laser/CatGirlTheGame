@@ -42,11 +42,13 @@ function draw_tiles(map)
 
 			if tileid > 0 then
 
-				--if tileid == 384 then
-				--printf("Drawing tile %d at %d, %d\n", tileid, x, y)
-				--end
+				local tileset_id = level.giant_ref_table[tileid]
 
-				func_draw(tilesets[level.tileset_id]['image'], tilesets[level.tileset_id]['quads'][tileid], x, y)
+				--tileid = tileid - tilesets[tileset_id].first_gid + 1
+
+				y = y - tilesets[tileset_id]['tile_h'] + level.tileH
+
+				func_draw(tilesets[tileset_id]['image'], tilesets[tileset_id]['quads'][tileid], x, y)
 
 			end
 		end
