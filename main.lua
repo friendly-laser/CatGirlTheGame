@@ -48,7 +48,9 @@ function love.load()
 	love.window.setTitle("Catgirl!")
 	love.window.setIcon( love.image.newImageData( "icon.png" ) )
 
-	load_sprite(1, "Sprites/Characters/Catgirl/catgirl_both_anim_64x64_sheet.png", 64, 64)
+	sprites_parse_xml("sprites.xml")
+
+	--load_sprite(1, "Sprites/Characters/Catgirl/catgirl_both_anim_64x64_sheet.png", 64, 64)
 
 	sound = love.audio.newSource("Music/level1.ogg")
 	sound:setLooping(true)
@@ -89,7 +91,7 @@ function restart_level(filename)
 
 	update_BGQuads(cLevel)
 
-	cDoll = make_actor(1, 30, -30)
+	cDoll = make_actor("catgirl", 30, -30)
 
 	camera:follow(cDoll)
 

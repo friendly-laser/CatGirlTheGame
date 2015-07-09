@@ -1,5 +1,58 @@
 sprites = {}
 
+function sprite_load_xml(node)
+	local spr = {}
+
+	local id, imagefilename, frameW, frameH = node.xarg.name, node.xarg.image, node.xarg.framewidth, node.xarg.frameheight
+
+	spr['image'] = love.graphics.newImage(imagefilename)
+	spr['frames'] = {}
+	spr['delays'] = {}
+	spr['max_frames'] = {}
+
+	local tileW = frameW
+	local tileH = frameH
+
+	local W, H = spr['image']:getWidth(), spr['image']:getHeight()
+
+	spr['frame_w'] = tileW
+	spr['frame_h'] = tileH
+
+	spr['origin_x'] = tileW / 2
+
+	for a, sub in ipairs(node) do
+		if (sub.label == "box") then
+			spr['bound_x'] = tonumber(sub.xarg.x)
+			spr['bound_y'] = tonumber(sub.xarg.y)
+			spr['bound_w'] = tonumber(sub.xarg.w)
+			spr['bound_h'] = tonumber(sub.xarg.h)
+		end
+		if (sub.label == "animation") then
+			local anim, row, col, maxf, delay =
+				sub.xarg.name, tonumber(sub.xarg.row), tonumber(sub.xarg.col),
+				tonumber(sub.xarg.frames), tonumber(sub.xarg.delay)
+			fill_anim_range(spr, anim, (col-1)* tileW, (row-1) * tileH, tileW, tileH, maxf, delay)
+		end
+	end
+
+	sprites[id] = spr
+
+	return spr
+end
+
+function sprites_parse_xml(filename)
+    local xml = LoadXML(love.filesystem.read(filename))
+	local root = xml[2]
+	if root.label == "sprite" then
+		sprite_load_xml(root)
+	end
+	if root.label == "sprites" then
+		for a, node in ipairs(root) do
+			sprite_load_xml(node)
+		end
+	end
+end
+
 function load_sprite(id, filename, tileW, tileH)
 	local spr = {}
 
