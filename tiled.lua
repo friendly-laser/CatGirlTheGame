@@ -215,20 +215,40 @@ local function getLayers(node)
 			layer.name = sub.xarg.name
 			layer.visible = tonumber(sub.xarg.visible)
 			--~ print("layername",layer.name)
-            width = tonumber(sub.xarg.width)
-            i = 0
-            j = 0
-            for l, child in ipairs(sub[1]) do
-                if (j == 0) then
-                    layer[i] = {}
-                end
-                layer[i][j] = tonumber(child.xarg.gid)
-                j = j + 1
-                if j >= width then
-                    j = 0
-                    i = i + 1
-                end
-            end
+
+			if (sub[1].label == "data") then
+				if (sub[1].xarg.encoding == "csv") then
+					local csv = sub[1][1]
+					local line, val
+					local i, j = 0, -1 --should skip empty lines instead
+					for line in string.gmatch(csv, "[^\n]+") do
+						layer[j] = {}
+						i = 0
+						for val in string.gmatch(line, "%d+") do
+							layer[j][i] = tonumber(val)
+							i = i + 1
+						end
+						j = j + 1
+						if j >= layers.height then -- should skip empty lines instead
+							break
+						end
+					end
+				else
+					local width = tonumber(sub.xarg.width)
+					local i, j = 0, 0
+					for l, child in ipairs(sub[1]) do
+						if (i == 0) then
+							layer[j] = {}
+						end
+						layer[j][i] = tonumber(child.xarg.gid)
+						i = i + 1
+						if i >= width then
+							i = 0
+							j = j + 1
+						end
+					end
+				end
+			end
         end
     end
     return layers
