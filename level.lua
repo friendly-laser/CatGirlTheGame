@@ -13,6 +13,9 @@ function load_level(filename)
 	level.tileW = 8
 	level.tileH = 8
 
+	level.start_x = 0
+	level.start_y = 0
+
     local info,tilesets,layers,backgrounds,objects = TiledMap_Parse(filename)
 
 	level.tileW = info.tileW
