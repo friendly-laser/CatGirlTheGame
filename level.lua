@@ -130,8 +130,8 @@ function load_level(filename)
 
 		if object.name == "Start" then
 
-			level.start_x = object.x
-			level.start_y = object.y
+			level.start_x = object.x + level.tileW * 1 -- * 4
+			level.start_y = object.y - level.tileH * 5 -- * 0
 
 		end
 
