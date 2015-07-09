@@ -6,6 +6,10 @@ require 'phys'
 require 'control'
 require 'camera'
 require 'actor'
+require 'game'
+require 'mainmenu'
+
+loveHandler = mainmenu
 
 canvas = nil
 cLevel = nil
@@ -35,6 +39,8 @@ end
 
 function love.load()
 
+	load_levels()
+
 	canvas = love.graphics.newCanvas(cBaseW, cBaseH)
 	canvas:setFilter("nearest", "nearest")
 
@@ -42,13 +48,7 @@ function love.load()
 	love.window.setTitle("Catgirl!")
 	love.window.setIcon( love.image.newImageData( "icon.png" ) )
 
-	cLevel = load_level("Levels/level1.tmx")
-
-	update_BGQuads(cLevel)
-
 	load_sprite(1, "Sprites/Characters/Catgirl/catgirl_both_anim_64x64_sheet.png", 64, 64)
-
-	cDoll = make_actor(1, 30, -30)
 
 	sound = love.audio.newSource("Music/level1.ogg")
 	sound:setLooping(true)
@@ -63,38 +63,43 @@ function love.draw()
 	love.graphics.setCanvas(canvas) --This sets the draw target to the canvas
 	canvas:clear(0,0,0)
 
-	-- Push camera tranform
-	camera:set()
-
-	-- DRAW
-	draw_frame()
-
-	-- Pop camera transform
-	camera:unset()
-
-	love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 0, 0)
+	loveHandler:draw()
 
 	-- Blit framebuffer to screen
 	love.graphics.setCanvas() --This sets the target back to the screen
 	love.graphics.draw(canvas, 0, 0, 0, cScaleW, cScaleH)
 
+--[[
 	love.graphics.print(doll.spring, 500, 10)
 	love.graphics.print(doll.spring_release, 500, 20)
 	love.graphics.print(cDoll.force_y, 500, 30)
 --	love.graphics.print(trif(love.keyboard.isDown(" "),"HOLD","REL"), 10, 30)
-
+--]]
 end
 
 function love.update(dt)
 
-	doll:control()
-	doll:update(dt)
-	doll:apply(cDoll)
+	loveHandler:update(dt)
 
-	phys_loop(dt)
+end
 
-	actor_apply_anim(cDoll, dt)
+function restart_level(filename)
+
+	cLevel = load_level("Levels/" .. filename)
+
+	update_BGQuads(cLevel)
+
+	cDoll = make_actor(1, 30, -30)
 
 	camera:follow(cDoll)
+
+end
+
+function abort_game()
+
+	cLevel = nil
+	cDoll = nil
+
+	loveHandler = mainmenu
 
 end
