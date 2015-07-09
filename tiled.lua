@@ -161,14 +161,23 @@ local function getTilesets(node)
 				end
 				if (lsub.label == "tile") then
 					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
-					for m, msub in ipairs(lsub[1]) do
-						--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
-						local tileid = lsub.xarg.id + ts['first_gid'] - 1
-						if ts.props[tileid] == nil then
-							ts.props[tileid] = {}
+					for n, nsub in ipairs(lsub) do
+						if (nsub.label == "animation") then
+
 						end
-						ts.props[tileid][msub.xarg.name] = msub.xarg.value
+						if (nsub.label == "properties") then
+							for m, msub in ipairs(nsub) do
+								dumps(msub)
+								--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
+								local tileid = lsub.xarg.id + ts['first_gid'] - 1
+								if ts.props[tileid] == nil then
+									ts.props[tileid] = {}
+								end
+								ts.props[tileid][msub.xarg.name] = msub.xarg.value
+							end
+						end
 					end
+
 				end
 			end
 
