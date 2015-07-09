@@ -76,9 +76,8 @@ function load_level(filename)
 	-- do something horrible....
 	animation_hack(level, tilesets)
 
-	level.rows = layers.height
-	level.cols = layers.width
-	level.colmap = make_matrix(layers.width, layers.height)
+
+	level.colmap = make_matrix(level.cols, level.rows)
 
 	local col = level.colmap
 
@@ -87,7 +86,7 @@ function load_level(filename)
 
 		if type(layerid) == "number" then
 			level.layers_visible[tonumber(layerid)] = layer.visible or 1
-			level.layers[tonumber(layerid)] = make_matrix(layers.width, layers.height)
+			level.layers[tonumber(layerid)] = make_matrix(level.cols, level.rows)
 			map = level.layers[tonumber(layerid)]
 		end
 

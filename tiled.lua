@@ -59,11 +59,11 @@ end
 local function getInfo(node)
 	local info = {}
 
-	info['tileW'] = node.xarg['tilewidth']
-	info['tileH'] = node.xarg['tileheight']
+	info['tileW'] = tonumber(node.xarg['tilewidth'])
+	info['tileH'] = tonumber(node.xarg['tileheight'])
 
-	info['cols'] = node.xarg['width']
-	info['rows'] = node.xarg['height']
+	info['cols'] = tonumber(node.xarg['width'])
+	info['rows'] = tonumber(node.xarg['height'])
 
 	return info
 end
@@ -71,41 +71,32 @@ end
 local function getObjects(node)
 	local objects = {}
 	local id = 1
-	print "Loading objects"
+	--print "Loading objects"
     for k, sub in ipairs(node) do
         if (sub.label == "objectgroup") then
-
 			for l, lsub in ipairs(sub) do
-				--if (lsub.label == "object") then
-				--	printf("Have image %s\n", lsub.xarg.source)
-				--end
 
 				objects[id] = {}
 				objects[id]['name'] = lsub.xarg.name or ""
 				objects[id]['type'] = lsub.xarg.type or ""
-				objects[id]['x'] = lsub.xarg.x
-				objects[id]['y'] = lsub.xarg.y
-				objects[id]['w'] = lsub.xarg.width
-				objects[id]['h'] = lsub.xarg.height
+				objects[id]['x'] = tonumber(lsub.xarg.x)
+				objects[id]['y'] = tonumber(lsub.xarg.y)
+				objects[id]['w'] = tonumber(lsub.xarg.width)
+				objects[id]['h'] = tonumber(lsub.xarg.height)
 				objects[id]['props'] = {}
 	
-				printf("Loaded object %s - %s\n", objects[id]['name'], objects[id]['type']);
+				--printf("Loaded object %s - %s\n", objects[id]['name'], objects[id]['type']);
 
 				if lsub[1] and lsub[1].label == "properties" then
 					for m, msub in ipairs(lsub[1]) do
-						printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
+						--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
 						objects[id]['props'][msub.xarg.name] = msub.xarg.value
 					end
 				end
 
 				id = id + 1
 			end
---[[
-				if (lsub.label == "properties") then
-					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
-				end
-			end
---]]
+
         end
     end
     return objects
@@ -114,7 +105,7 @@ end
 local function getBackgrounds(node)
 	local backgrounds = {}
 	local id = 1
-	print "Loading backgrounds"
+	--print "Loading backgrounds"
     for k, sub in ipairs(node) do
         if (sub.label == "imagelayer") then
 			local filename = sub[1].xarg.source
@@ -124,13 +115,10 @@ local function getBackgrounds(node)
 			backgrounds[id]['props'] = {}
 
 			for l, lsub in ipairs(sub) do
-				if (lsub.label == "image") then
-					printf("Have image %s\n", lsub.xarg.source)
-				end
+				--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
 				if (lsub.label == "properties") then
-					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
 					for m, msub in ipairs(lsub) do
-						printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
+						--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
 						backgrounds[id]['props'][msub.xarg.name] = msub.xarg.value
 					end
 				end
@@ -171,7 +159,7 @@ local function getTilesets(node)
 
 								local mtileid = msub.xarg.tileid --- + ts['first_gid'] - 1
 								local duration = tonumber(msub.xarg.duration) / 1000
-								printf("+Have frame %d = <tile = %d> <duration=%f>\n", m, mtileid, duration)
+								--printf("+Have frame %d = <tile = %d> <duration=%f>\n", m, mtileid, duration)
 
 								ts.anim[tileid][m] = {}
 								ts.anim[tileid][m]["gid"] = mtileid
@@ -181,7 +169,6 @@ local function getTilesets(node)
 						end
 						if (nsub.label == "properties") then
 							for m, msub in ipairs(nsub) do
-								dumps(msub)
 								--printf("+Have %d = %s <%s = %s>\n", m, msub.label, msub.xarg.name, msub.xarg.value)
 								local tileid = lsub.xarg.id + ts['first_gid'] - 1
 								if ts.props[tileid] == nil then
@@ -204,16 +191,14 @@ end
 
 local function getLayers(node)
     local layers = {}
-	layers.width = 0
-	layers.height = 0
     for k, sub in ipairs(node) do
         if (sub.label == "layer") then --  and sub.xarg.name == layer_name
-			layers.width  = math.max(layers.width ,tonumber(sub.xarg.width ) or 0)
-			layers.height = math.max(layers.height,tonumber(sub.xarg.height) or 0)
             local layer = {}
             table.insert(layers,layer)
 			layer.name = sub.xarg.name
 			layer.visible = tonumber(sub.xarg.visible)
+			layer.width = tonumber(sub.xarg.width)
+			layer.height = tonumber(sub.xarg.height)
 			--~ print("layername",layer.name)
 
 			if (sub[1].label == "data") then
@@ -229,12 +214,11 @@ local function getLayers(node)
 							i = i + 1
 						end
 						j = j + 1
-						if j >= layers.height then -- should skip empty lines instead
+						if j >= layer.height then -- should skip empty lines instead
 							break
 						end
 					end
 				else
-					local width = tonumber(sub.xarg.width)
 					local i, j = 0, 0
 					for l, child in ipairs(sub[1]) do
 						if (i == 0) then
@@ -242,7 +226,7 @@ local function getLayers(node)
 						end
 						layer[j][i] = tonumber(child.xarg.gid)
 						i = i + 1
-						if i >= width then
+						if i >= layer.width then
 							i = 0
 							j = j + 1
 						end
