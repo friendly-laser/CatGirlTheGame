@@ -19,29 +19,18 @@ cScaleH = 2
 capPhysFPS = 30
 cPhysDelay = 0
 
-function make_actor(sprite_id, x, y)
-	local actor = {}
+cGamepad = nil
 
-	actor.sprite_id = sprite_id
-	actor.sprite = sprites[sprite_id]
-	actor.x = x
-	actor.y = y
-
-	actor.w = actor.sprite['frame_w']
-	actor.h = actor.sprite['frame_h']
-
-	actor.anim = 'idle'
-	actor.frame = 1
-	actor.flip = 1
-	actor.anim_delay = 0
-
-	actor.force_x = 0
-	actor.force_y = 0
-	actor.spring = 0
-	actor.spring_force = 0
-	actor.standing = 0
-
-	return actor
+function love.joystickadded(joy)
+	if cGamepad == nil then
+		printf("Got gamepad!!!\n")
+		cGamepad = joy
+	end
+end
+function love.joystickremoved(joy)
+	if cGamepad == joy then
+		cGamepad = nil
+	end
 end
 
 function love.load()
@@ -89,14 +78,18 @@ function love.draw()
 	love.graphics.setCanvas() --This sets the target back to the screen
 	love.graphics.draw(canvas, 0, 0, 0, cScaleW, cScaleH)
 
---	love.graphics.print(elvis.spring, 10, 10)
---	love.graphics.print(elvis.spring_force, 10, 20)
+	love.graphics.print(doll.spring, 500, 10)
+	love.graphics.print(doll.spring_release, 500, 20)
+	love.graphics.print(cDoll.force_y, 500, 30)
 --	love.graphics.print(trif(love.keyboard.isDown(" "),"HOLD","REL"), 10, 30)
+
 end
 
 function love.update(dt)
 
-	doll_control(cDoll, dt)
+	doll:control()
+	doll:update(dt)
+	doll:apply(cDoll)
 
 	phys_loop(dt)
 
