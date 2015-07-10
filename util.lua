@@ -18,18 +18,28 @@ function dumps(o)
 	if type(o) == "table" then
 		printf("{ ");
 		local k,v
+		local coma = " "
 		for k,v in pairs(o) do
+			printf("%s", coma)
 			dumps(k)
 			printf(": ")
 			dumps(v)
-			printf(", ")
+			coma = ", "
 		end
 		printf("} ");
+	end
+	if type(o) == "boolean" then
+		if o == true then
+			printf("true");
+		else
+			printf("false");
+		end
 	end
 	if type(o) == "string" then
 		printf("\"%s\"", o)
 	end
 	if type(o) == "number" then
+		--meh, this could be %f
 		printf("%d", o)
 	end
 end
