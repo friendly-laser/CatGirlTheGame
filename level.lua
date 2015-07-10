@@ -78,8 +78,10 @@ function load_level(filename)
 
 
 	level.colmap = make_matrix(level.cols, level.rows)
+	level.hitmap = make_matrix(level.cols, level.rows)
 
 	local col = level.colmap
+	local hit = level.hitmap
 
 	for layerid,layer in pairs(layers) do
 		local map = nil
@@ -104,11 +106,18 @@ function load_level(filename)
 
 					--printf("Got tile %d ==> tileset %d\n", t, tileset_id);
 
-					local test = level.tilesets[tileset_id]['collide'][t]
+					local ctest = level.tilesets[tileset_id]['collide'][t]
 
-					if not(test == "none") or col[ty + 1][tx + 1] == "none" then
-						col[ty + 1][tx + 1] = test
-						--printf("Setting %d, %d to %s\n", tx, ty, test)
+					if not(ctest == "none") or col[ty + 1][tx + 1] == "none" then
+						col[ty + 1][tx + 1] = ctest
+						--printf("Setting %d, %d to %s\n", tx, ty, ctest)
+					end
+
+					local htest = level.tilesets[tileset_id]['hit'][t]
+
+					if not(htest == "none") or hit[ty + 1][tx + 1] == "none" then
+						hit[ty + 1][tx + 1] = htest
+						--printf("Setting %d, %d to %s\n", tx, ty, htest)
 					end
 
 				end
@@ -173,6 +182,7 @@ function load_tileset(filename, tileW, tileH, first_gid)
 	ts['image'] = love.graphics.newImage(filename)
 	ts['quads'] = {}
 	ts['collide'] = {}
+	ts['hit'] = {}
 	ts['anim_x'] = {}
 	ts['anim_y'] = {}
 	ts['anim_delay'] = {}
@@ -202,6 +212,7 @@ function load_tileset(filename, tileW, tileH, first_gid)
 
 		ts['quads'][gid] = love.graphics.newQuad(x, y, tileW, tileH, tilesetW, tilesetH)
 		ts['collide'][gid] = 'none'
+		ts['hit'][gid] = 'none'
 		x = x + tileW
 		gid = gid + 1
 	end

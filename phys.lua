@@ -107,6 +107,16 @@ function tile_collide(actor, dx, dy)
 			if collided == true then
 				new_x = actor.x
 				new_y = actor.y
+
+				local hit = level.hitmap[j][i]
+				if (hit == "bounce") then
+					actor.force_y = -20
+				end
+				if (hit == "damage" and actor.effect == "") then
+					actor.force_y = -15
+					actor.force_x = -15 * actor.flip
+					actor_damage(actor, 1);
+				end
 				if (dy < 0) then
 					actor.force_y = 0
 				end
