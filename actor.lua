@@ -23,10 +23,23 @@ function make_actor(sprite_id, x, y)
 	actor.spring_force = 0
 	actor.standing = 0
 
+	actor.effect = ""
+	actor.effect_delay = 0
+
 	return actor
 end
 
 function actor_apply_anim(actor, dt)
+
+	--update effects
+	if (actor.effect ~= "") then
+		actor.effect_delay = actor.effect_delay - dt
+
+		if actor.effect_delay <= 0 then
+			actor.effect_delay = 0
+			actor.effect = ""
+		end
+	end
 
 	local anim
 
@@ -88,5 +101,12 @@ function actor_apply_anim(actor, dt)
 	if actor.anim_delay <= 0 then
 		actor.anim_delay = actor.sprite['delays'][actor.anim][actor.frame]
 	end
+
+end
+
+function actor_damage(actor, dmg)
+
+	actor.effect = "flicker"
+	actor.effect_delay = 2
 
 end

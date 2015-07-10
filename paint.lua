@@ -16,6 +16,14 @@ function draw_actor(actor)
 	sprite = actor.sprite
 	frame = sprite['frames'][actor.anim][actor.frame]
 
+	if actor.effect == "flicker" then
+
+		if (math.floor(math.sin(actor.effect_delay*25)) % 2 == 0) then
+			return
+		end
+
+	end
+
 	love.graphics.draw(sprite.image, frame, actor.x, actor.y, 0, actor.flip, 1, sprite.origin_x)
 end
 
