@@ -24,7 +24,7 @@ function draw_actor(actor)
 
 	end
 
-	love.graphics.draw(sprite.image, frame, actor.x, actor.y, 0, actor.flip, 1, sprite.origin_x)
+	love.graphics.draw(sprite.image, frame, actor.x + sprite.origin_x, actor.y, 0, actor.flip, 1, sprite.origin_x)
 end
 
 function draw_actors()

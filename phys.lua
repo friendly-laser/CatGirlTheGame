@@ -11,8 +11,8 @@ function tiles_around_actor(level, actor)
 
 	atx = atx - 1
 	aty = aty - 1
-	atw = atw + 1
-	ath = ath + 1
+	atw = atw + 2
+	ath = ath + 2
 
 	if (atx < 1) then atx = 1 end
 	if (aty < 1) then aty = 1 end
@@ -30,7 +30,8 @@ function rect_vs_rect(x1,y1,w1,h1, x2,y2,w2,h2)
 		y2 < y1+h1
 end
 function box_vs_box(box1, box2)
-	return box1.x < box2.x + box2.w and
+	return
+		box1.x < box2.x + box2.w and
 		box2.x < box1.x + box1.w and
 		box1.y < box2.y + box2.h and
 		box2.y < box1.y + box1.h
@@ -55,6 +56,12 @@ function tile_collide(actor, dx, dy)
 	new_x = actor.x + dx
 	new_y = actor.y + dy
 
+	local actor_box = {}
+	actor_box.x = new_x + actor.sprite.bound_x
+	actor_box.y = new_y + actor.sprite.bound_y
+	actor_box.w = actor.sprite.bound_w
+	actor_box.h = actor.sprite.bound_h
+
 -- Collide with tiles
 	local tx,ty,tw,th = tiles_around_actor(level, actor);
 
@@ -67,13 +74,6 @@ function tile_collide(actor, dx, dy)
 
 			local x = (i-1) * level.tileW
 			local y = (j-1) * level.tileH
-
-
-			local actor_box = {}
-			actor_box.x = new_x - actor.sprite.origin_x + actor.sprite.bound_x
-			actor_box.y = new_y + actor.sprite.bound_y
-			actor_box.w = actor.sprite.bound_w
-			actor_box.h = actor.sprite.bound_h
 
 			local tile_box = {}
 			tile_box.x = x
