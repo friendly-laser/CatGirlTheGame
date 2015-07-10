@@ -154,6 +154,7 @@ local function getTilesets(node)
 			ts['tile_h'] = tonumber(sub.xarg.tileheight)
 			ts['file'] = sub[1].xarg.source
 			ts['props'] = {}
+			ts['anim'] = {}
 
 			for l, lsub in ipairs(sub) do
 				if (lsub.label == "image") then
@@ -163,6 +164,19 @@ local function getTilesets(node)
 					--printf("Have %d = %s\n", lsub.xarg.id, lsub.label)
 					for n, nsub in ipairs(lsub) do
 						if (nsub.label == "animation") then
+							local tileid = lsub.xarg.id + ts['first_gid'] - 1
+							-- for each frame
+							ts.anim[tileid] = {}
+							for m, msub in ipairs(nsub) do
+
+								local mtileid = msub.xarg.tileid --- + ts['first_gid'] - 1
+								local duration = tonumber(msub.xarg.duration) / 1000
+								printf("+Have frame %d = <tile = %d> <duration=%f>\n", m, mtileid, duration)
+
+								ts.anim[tileid][m] = {}
+								ts.anim[tileid][m]["gid"] = mtileid
+								ts.anim[tileid][m]["delay"] = duration
+							end
 
 						end
 						if (nsub.label == "properties") then

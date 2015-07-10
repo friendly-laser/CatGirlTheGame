@@ -71,6 +71,10 @@ function load_level(filename)
 	-- so it's all good
 	level.giant_ref_table[0] = 1
 
+
+	-- do something horrible....
+	animation_hack(level, tilesets)
+
 	level.rows = layers.height
 	level.cols = layers.width
 	level.colmap = make_matrix(layers.width, layers.height)
@@ -260,4 +264,56 @@ function anim_all_tiles(dt)
 	for id = 1, num_layers do
 		anim_tiles(cLevel.layers[id], dt)
 	end
+end
+
+
+function animation_hack(level, tilesets)
+
+    for tileset_id, ts in pairs(tilesets) do
+		local first_gid = ts['first_gid']
+
+		printf("Animating tileset %d (first_gid=%d)\n", tileset_id, first_gid);
+
+		for id, tbl in pairs(ts.anim) do
+			--printf("Have anim for tile %d:\n", id)
+			local max_frames = table.getn(tbl)
+			for ind, frame in pairs(tbl) do
+				local next, next_ind
+				if (ind < max_frames) then
+					next_ind = ind + 1
+					next = tbl[ind + 1]
+				else
+					next_ind = 1
+					next = tbl[1]
+				end
+				local gid = frame["gid"] + ts.first_gid
+
+				--printf("   frame %d = , next = %d, gid=%d ", ind, next_ind, gid)
+				--dumps(frame)
+
+				local src_id = frame["gid"] + 1
+				local src_y = math.floor(src_id / ts['tile_h'])
+				local src_x = src_id - src_y * ts['tile_h']
+				local dest_id = next["gid"] + 1
+				local dest_y = math.floor(dest_id / ts['tile_h'])
+				local dest_x = dest_id - dest_y * ts['tile_h']
+
+				local anim_to, anim_x, anim_y
+
+				anim_to = next["gid"] + ts.first_gid
+
+				anim_x = dest_x - src_x
+				anim_y = dest_y - src_y
+
+				--printf("   anim_to = %d, anim_x = %d, anim_y = %d\n", anim_to, anim_x, anim_y);
+
+				level.tilesets[tileset_id]['anim_delay'][gid] = frame['delay']
+				level.tilesets[tileset_id]['anim_x'][gid] = anim_x
+				level.tilesets[tileset_id]['anim_y'][gid] = anim_y
+
+			end
+		end
+
+    end
+
 end
