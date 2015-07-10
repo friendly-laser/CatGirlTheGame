@@ -15,10 +15,16 @@ canvas = nil
 cLevel = nil
 cDoll = nil
 
+cConfig = nil
+cRes = nil -- current resolution
+cResolutions = nil -- list of resolutions
+
 cBaseW = 480
 cBaseH = 270
 cScaleW = 2
 cScaleH = 2
+cPanX = 0
+cPanY = 0
 
 capPhysFPS = 30
 cPhysDelay = 0
@@ -37,21 +43,32 @@ function love.joystickremoved(joy)
 	end
 end
 
+function config_apply_res(config, res)
+	config.fullscreen = trif(res.win, "false", "true")
+	config.width = res.w
+	config.height = res.h
+	config.display = res.display
+end
+
+function write_config(config)
+	local data = ini1dump(config)
+	love.filesystem.write("config.ini", data)
+end
+
 function read_config()
 	local config = {}
 
 	filename = "config.ini"
 
 	if not(love.filesystem.exists(filename)) then
-	
-		printf("File '%s' does not exist!\n", filename);	
-
+		printf("File '%s' does not exist!\n", filename)
 	end
 
 	for line in love.filesystem.lines(filename) do
-		k,v = line:match("^([%w%p]-)=(.*)$")
-
-		config[k] = v
+		k,v = line:match("^([%w%p]-)%s*=%s*(.*)$")
+		if k and v then
+			config[k] = v
+		end
 	end
 
 	return config
@@ -63,7 +80,7 @@ function configured_resolution()
 	local res = make_resolution(
 		tonumber(config.display or 1),
 		"default",
-		trif(config.fullscreen == "true", true, false),
+		trif(config.fullscreen == "true", false, true),
 		tonumber(config.width or 480),
 		tonumber(config.height or 270)
 	)
