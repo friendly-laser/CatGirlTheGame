@@ -37,20 +37,90 @@ function love.joystickremoved(joy)
 	end
 end
 
-function love.load()
+function read_config()
+	local config = {}
 
-	load_levels()
+	filename = "config.ini"
+
+	if not(love.filesystem.exists(filename)) then
+	
+		printf("File '%s' does not exist!\n", filename);	
+
+	end
+
+	for line in love.filesystem.lines(filename) do
+		k,v = line:match("^([%w%p]-)=(.*)$")
+
+		config[k] = v
+	end
+
+	return config
+end
+
+function configured_resolution()
+	local config = cConfig
+
+	local res = make_resolution(
+		tonumber(config.display or 1),
+		"default",
+		trif(config.fullscreen == "true", true, false),
+		tonumber(config.width or 480),
+		tonumber(config.height or 270)
+	)
+
+	return res
+end
+
+function pick_resolution()
+	cConfig = read_config()
+	cResolutions = find_resolutions()
+
+	local res = configured_resolution()
+
+	-- see if it's valid
+	local valid, _ = match_res(res)
+
+	-- if invalid, pick new one (top)
+	if (valid == 0) then
+		res = cResolutions[1]
+	end
+
+	cRes = res
+
+	cBaseW = res.base_w
+	cBaseH = res.base_h
+	cScaleW = res.scale_x
+	cScaleH = res.scale_y
+	cPanX = res.pan_x
+	cPanX = res.pan_x
+end
+
+function setWindowMode()
+
+	love.window.setMode(cBaseW * cScaleW, cBaseH * cScaleH, {fullscreen=not(cRes.win), display=cRes.display} )
+	love.window.setTitle("Catgirl!")
+	love.window.setIcon( wIcon )
 
 	canvas = love.graphics.newCanvas(cBaseW, cBaseH)
 	canvas:setFilter("nearest", "nearest")
 
-	love.window.setMode(cBaseW * cScaleW, cBaseH * cScaleH, {} )
-	love.window.setTitle("Catgirl!")
-	love.window.setIcon( love.image.newImageData( "icon.png" ) )
+	camera:setSize(cBaseW, cBaseH)
+
+end
+
+function love.load()
+
+	wIcon = love.image.newImageData( "icon.png" )
+
+	pick_resolution()
+
+	setWindowMode()
+
+	menu_res_init(cRes)
+
+	load_levels()
 
 	sprites_parse_xml("sprites.xml")
-
-	--load_sprite(1, "Sprites/Characters/Catgirl/catgirl_both_anim_64x64_sheet.png", 64, 64)
 
 	sound = love.audio.newSource("Music/level1.ogg")
 	sound:setLooping(true)
@@ -62,13 +132,13 @@ end
 function love.draw()
 
 	-- Draw to framebuffer
-	love.graphics.setCanvas(canvas) --This sets the draw target to the canvas
+	love.graphics.setCanvas(canvas)
 	canvas:clear(0,0,0)
 
 	loveHandler:draw()
 
 	-- Blit framebuffer to screen
-	love.graphics.setCanvas() --This sets the target back to the screen
+	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, cScaleW, cScaleH)
 
 --[[

@@ -19,19 +19,21 @@ function camera:unset()
   love.graphics.pop()
 end
 
+function camera:setSize(w, h)
+	self.w = w or love.graphics.getWidth()
+	self.h = h or love.graphics.getHeight()
+end
+
 function camera:getTileBounds()
 	local level = cLevel
-
-	self.w = love.graphics.getWidth()
-	self.h = love.graphics.getHeight()
 
 	return tiles_around_actor(level, camera)
 end
 
 function camera:follow(actor)
 	--calc
-	local w = love.graphics.getWidth() / cScaleW
-	local h = love.graphics.getHeight() / cScaleH
+	local w = self.w
+	local h = self.h
 
 	local x = actor.x - w / 2
 	local y = actor.y - h / 2
