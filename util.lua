@@ -34,6 +34,15 @@ function dumps(o)
 	end
 end
 
+function ini1dump(table)
+	local ret = ""
+	local k,v
+	for k,v in pairs(table) do
+		ret = ret .. k .. " = " .. v .. "\n"
+	end
+	return ret
+end
+
 function make_matrix(w, h)
 	local grid = {}
 	for j = 1, h do

@@ -198,6 +198,9 @@ function menu_res_apply()
 
 	setWindowMode()
 
+	-- save to file
+	config_apply_res(cConfig, res)
+	write_config(cConfig)
 end
 
 function menu_res_refilter()
