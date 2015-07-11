@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles>
+	<role name="catgirl" sprite="catgirl">
+		<phys walkspeed="6" risespeed="7" fallspeed="6"/>
+		<ai type="none"/>
+	</role>
+</roles>

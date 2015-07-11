@@ -5,6 +5,7 @@ require 'paint'
 require 'phys'
 require 'control'
 require 'camera'
+require 'role'
 require 'actor'
 require 'game'
 require 'mainmenu'
@@ -138,6 +139,7 @@ function love.load()
 	load_levels()
 
 	sprites_parse_xml("sprites.xml")
+	roles_parse_xml("roles.xml")
 
 	sound = love.audio.newSource("Music/level1.ogg")
 	sound:setLooping(true)
