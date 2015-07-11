@@ -1,32 +1,62 @@
-function make_actor(sprite_id, x, y)
-	local actor = {}
+Actor = {}
+Actor.__index = Actor
 
-	actor.sprite_id = sprite_id
-	actor.sprite = sprites[sprite_id]
+function make_actor(role_id, x, y, sprite_id)
+	local actor = {}
+	setmetatable(actor, Actor)
+
 	actor.x = x
 	actor.y = y
 
-	actor.w = actor.sprite['frame_w']
-	actor.h = actor.sprite['frame_h']
+	actor:setRole(role_id)
+	actor:setSprite(sprite_id or actor.sprite_id)
 
 	actor.anim = 'idle'
 	actor.frame = 1
 	actor.flip = 1
 	actor.anim_delay = 0
 
-	actor.walk_speed = 5
-	actor.air_speed = 4
-
 	actor.force_x = 0
 	actor.force_y = 0
-	actor.spring = 0
-	actor.spring_force = 0
+	actor.move_x = 0
+	actor.spring_jump = 0
+	actor.landed = 0
+	actor.ledge_right = 0
+	actor.ledge_left = 0
+	actor.standing_on = nil
 	actor.standing = 0
 
 	actor.effect = ""
 	actor.effect_delay = 0
 
+	actor.think_delay = 0
+	actor.ai_delay = 0
+
 	return actor
+end
+
+function Actor:setRole(role_id)
+	if not(roles[role_id]) then
+		printf("Undefined role %s !!! \n", role_id)
+		return
+	end
+	self.role_id = role_id
+	self.sprite_id = roles[role_id].sprite_id
+	self.phys = roles[role_id].phys
+	self.collide = roles[role_id].box.collide
+	self.hit = roles[role_id].box.hit
+	self.ai = roles[role_id].ai
+end
+
+function Actor:setSprite(sprite_id)
+	if not(sprites[sprite_id]) then
+		printf("Undefined sprite %s !!! \n", sprite_id)
+		return
+	end
+	self.sprite_id = sprite_id
+	self.sprite = sprites[sprite_id]
+	self.w = self.sprite['frame_w']
+	self.h = self.sprite['frame_h']
 end
 
 function actor_apply_anim(actor, dt)
