@@ -30,18 +30,13 @@ cPanY = 0
 capPhysFPS = 30
 cPhysDelay = 0
 
-cGamepad = nil
+
 
 function love.joystickadded(joy)
-	if cGamepad == nil then
-		printf("Got gamepad!!!\n")
-		cGamepad = joy
-	end
+	vpad:setJoystick(joy)
 end
 function love.joystickremoved(joy)
-	if cGamepad == joy then
-		cGamepad = nil
-	end
+	vpad:setJoystick()
 end
 
 function config_apply_res(config, res)
