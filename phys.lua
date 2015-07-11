@@ -297,7 +297,7 @@ function actor_phys(actor, dt)
 
 	-- check if we landed, set flag
 	if was_standing == 0 and actor.standing == 1 then
-		actor.landed = 1
+		actor.landed = 1 * actor.phys.land_wait
 	end
 
 	-- friction

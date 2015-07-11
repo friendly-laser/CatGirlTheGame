@@ -27,6 +27,8 @@ function role_load_xml(node)
 			role.phys.rise_speed = tonumber(sub.xarg.risespeed) or 1
 			role.phys.fall_speed = tonumber(sub.xarg.fallspeed) or 1
 			role.phys.jump_height = tonumber(sub.xarg.jumpheight) or 16
+			role.phys.land_wait = tonumber(sub.xarg.landwait) or 1
+			role.phys.land_speed = tonumber(sub.xarg.landspeed) or 1
 		end
 	end
 

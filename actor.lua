@@ -75,12 +75,22 @@ function actor_apply_anim(actor, dt)
 
 	-- select animation
 	if actor.standing == 1 then
-		if actor.move_x ~= 0 then
-			-- moving on the ground
-			anim = "walk"
+		if actor.spring ~= 0 then
+			--preparing to jump
+			anim = "jump"
 		else
-			-- standing on the ground
-			anim = "idle"
+			if actor.landed > 0 then
+				-- just landed
+				anim = "land"
+			else
+				if actor.move_x ~= 0 then
+					-- moving on the ground
+					anim = "walk"
+				else
+					-- standing on the ground
+					anim = "idle"
+				end
+			end
 		end
 	else
 		if actor.force_y < 0 then
@@ -160,6 +170,10 @@ function actor_apply_control(actor, vpad)
 		else
 			move_speed = actor.phys.fall_speed
 		end
+	else
+		if actor.landed > 0 then
+			move_speed = actor.phys.land_speed
+		end
 	end
 
 	actor.move_x = 0
@@ -175,6 +189,8 @@ function actor_apply_control(actor, vpad)
 		actor.move_x = x_factor
 		actor.flip = -1
 	end
+
+	actor.spring = vpad.imps[1].ball
 
 	actor.spring_jump = actor.spring_jump + vpad.report['jump']
 	if (actor.spring_jump > 1) then actor.spring_jump = 1 end

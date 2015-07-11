@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <roles>
 	<role name="catgirl" sprite="catgirl">
-		<phys walkspeed="6" risespeed="7" fallspeed="6"/>
+		<phys walkspeed="5" risespeed="6" fallspeed="3" jumpheight="12" landwait="0.40" landspeed="2" />
 		<ai type="none"/>
 	</role>
 	<role name="snail" sprite="snail">
 		<box collide="wall" hit="none"/>
-		<phys walkspeed="1" risespeed="1" fallspeed="1"/>
+		<phys walkspeed="1" risespeed="1" fallspeed="1" jumpheight="8" landwait="0.25" />
 		<ai type="walk" ledge="avoid" thinkdelay="5" thinkchance="50" thinkduration="3" />
 	</role>
 </roles>
