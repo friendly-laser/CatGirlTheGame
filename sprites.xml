@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sprites>
-	<sprite name="catgirl" image="Sprites/Characters/Catgirl/catgirl_both_anim_64x64_sheet.png" framewidth="64" frameheight="64">
-		<box x="20" y="24" w="24" h="40"/>
+	<sprite name="catgirl" image="Sprites/Characters/Catgirl/catgirl_right.png" framewidth="64" frameheight="64">
+		<box x="20" y="8" w="24" h="40"/>
 		<animation name="idle" delay="0.2000" row="1" col="1" frames="10"/>
 		<animation name="walk" delay="0.1000" row="2" col="1" frames="8"/>
-		<animation name="jump" delay="0.1000" row="2" col="3" frames="1"/>
-		<animation name="rise" delay="0.1000" row="2" col="3" frames="1"/>
-		<animation name="vrise" delay="0.1000" row="2" col="3" frames="1"/>
-		<animation name="fall" delay="0.1000" row="2" col="3" frames="1"/>
-		<animation name="land" delay="0.1000" row="2" col="3" frames="1"/>
+		<animation name="jump" delay="0.07" row="3" col="1" frames="5"/>
+		<animation name="rise" delay="0.07" row="3" col="6" frames="4"/>
+		<animation name="vrise" delay="0.07" row="3" col="6" frames="4"/>
+		<animation name="fall" delay="0.07" row="3" col="10" frames="5"/>
+		<animation name="land" delay="0.07" row="3" col="15" frames="2"/>
 	</sprite>
 	<sprite name="snail" image="Sprites/sandbox/snail_3.png" framewidth="32" frameheight="32">
 		<box x="1" y="10" w="30" h="18"/>
