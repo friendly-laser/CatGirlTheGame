@@ -122,6 +122,13 @@ function VImpulse:setKey(kbd1, kbd2)
 	self.kbd_push1 = kbd1
 	self.kbd_push2 = kbd2
 end
+function VImpulse:setButton(btn1, btn2)
+	self.joy_push1 = btn1
+	self.joy_push2 = btn2
+end
+function VImpulse:setJoystickAxis(jax)
+	self.joy_axis = jax
+end
 
 function VImpulse:setSpeed(attack, release, gain)
 	attack = attack or 1
@@ -174,6 +181,7 @@ function VImpulse:update(dt)
 end
 
 vpad = {}
+vpad.joystick = nil -- active gamepad or nil
 vpad.report = {} -- current state of affairs
 vpad.axs = {} -- list of Virtual Axies
 vpad.imps = {} -- list of Virtual Impulses
@@ -197,32 +205,53 @@ function vpad:init_generic()
 	ax = vpad:create_axis("x")
 	ax:setPullKey("left", "a")
 	ax:setPushKey("right", "d")
+	ax:setJoystickAxis("leftx")
 
 	btn = vpad:create_impulse("jump")
 	btn:setKey(" ", "return")
+	btn:setButton("a")
+	--btn:setJoystickAxis("triggerright")
 
 --hat
 	local hat_speed = 4
 	btn = vpad:create_impulse("up")
 	btn:setKey("up", "w")
+	btn:setButton("dpup")
 	btn:setSpeed(hat_speed, hat_speed, hat_speed*4)
 
 	btn = vpad:create_impulse("down")
 	btn:setKey("down", "s")
+	btn:setButton("dpdown")
 	btn:setSpeed(hat_speed, hat_speed, hat_speed*4)
 
 	btn = vpad:create_impulse("left")
 	btn:setKey("left", "a")
+	btn:setButton("dpleft")
 	btn:setSpeed(hat_speed, hat_speed, hat_speed*4)
 
 	btn = vpad:create_impulse("right")
 	btn:setKey("right", "d")
+	btn:setButton("dpright")
 	btn:setSpeed(hat_speed, hat_speed, hat_speed*4)
+end
+
+function vpad:setJoystick(joy)
+	self.joystick = joy
 end
 
 function vpad:control()
 	local i,vax,vimp
 	local func_isDown = love.keyboard.isDown
+	local func_joyDown
+	func_joyDown = function()
+		return false
+	end
+	local joy_on = false
+
+	if self.joystick ~= nil and self.joystick:isConnected() == true then
+		joy_on = true
+		func_joyDown = function(b) if b == nil then return false else return self.joystick:isGamepadDown(b) end end
+	end
 
 	for i,vax in pairs(self.axs) do
 
@@ -233,6 +262,9 @@ function vpad:control()
 		elseif func_isDown(vax.kbd_pull1) or func_isDown(vax.kbd_pull2) then
 			vax.point = -1
 		end
+		if vax.joy_axis and joy_on == true then
+			vax.point = self.joystick:getGamepadAxis(vax.joy_axis)
+		end
 
 	end
 
@@ -242,6 +274,12 @@ function vpad:control()
 
 		if func_isDown(vimp.kbd_push1) or func_isDown(vimp.kbd_push2) then
 			vimp.point = 1
+		end
+		if func_joyDown(vimp.joy_push1) or func_joyDown(vimp.joy_push2) then
+			vimp.point = 1
+		end
+		if vimp.joy_axis and joy_on == true then
+			vimp.point = self.joystick:getGamepadAxis(vimp.joy_axis)
 		end
 
 	end

@@ -30,18 +30,56 @@ cPanY = 0
 capPhysFPS = 30
 cPhysDelay = 0
 
-cGamepad = nil
+
 
 function love.joystickadded(joy)
-	if cGamepad == nil then
-		printf("Got gamepad!!!\n")
-		cGamepad = joy
-	end
+	vpad:setJoystick(joy)
 end
 function love.joystickremoved(joy)
-	if cGamepad == joy then
-		cGamepad = nil
+	vpad:setJoystick()
+end
+
+
+sounds = {}
+music = nil
+function load_sounds()
+	local dir = "Sounds"
+	local files = love.filesystem.getDirectoryItems(dir)
+	local k, file
+	for k, file in ipairs(files) do
+		if string.ends(file, ".wav") then
+			local short = string.sub(file,1,string.len(file)-4) -- remove extension
+			local fullname = dir .. '/' .. file
+			sounds[short] = love.audio.newSource(fullname)
+		end
 	end
+end
+function play_sound(name)
+	love.audio.play(sounds[name])
+end
+
+
+function pick_volume(config)
+	config_apply_master(config, config.master)
+	config_apply_sounds(config, config.sounds)
+	config_apply_music(config, config.music)
+end
+
+function config_apply_master(config, vol)
+	config.master = math.max(0, math.min(tonumber(vol or 100), 100))
+	love.audio.setVolume(config.master / 100)
+end
+function config_apply_sounds(config, vol)
+	config.sounds = math.max(0, math.min(tonumber(vol or 100), 100))
+	local n, sound
+	local sound_factor = config.sounds / 100
+	for n, sound in pairs(sounds) do
+		sound:setVolume(sound_factor)
+	end
+end
+function config_apply_music(config, vol)
+	config.music = math.max(0, math.min(tonumber(vol or 100), 100))
+	music:setVolume(config.music / 100)
 end
 
 function config_apply_res(config, res)
@@ -142,9 +180,14 @@ function love.load()
 	sprites_parse_xml("sprites.xml")
 	roles_parse_xml("roles.xml")
 
-	sound = love.audio.newSource("Music/level1.ogg")
-	sound:setLooping(true)
-	love.audio.play(sound)
+	load_sounds()
+
+	music = love.audio.newSource("Music/level1.ogg")
+	music:setLooping(true)
+
+	pick_volume(cConfig)
+
+	love.audio.play(music)
 
 	love.graphics.setBackgroundColor(0,0,0)
 

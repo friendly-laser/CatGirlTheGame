@@ -293,21 +293,57 @@ function mainmenu:draw()
 
 	love.graphics.print("Apply!", 120, 120)
 
+	if self.sel == 8 then
+		love.graphics.setColor(0, 255, 0, 255)
+	else
+		love.graphics.setColor(255, 255, 255, 255)
+	end
+
+	love.graphics.print("Master: ", 120, 140)
+	love.graphics.print(cConfig.master, 190, 140)
+
+
+	if self.sel == 9 then
+		love.graphics.setColor(0, 255, 0, 255)
+	else
+		love.graphics.setColor(255, 255, 255, 255)
+	end
+
+	love.graphics.print("Sounds: ", 120, 150)
+	love.graphics.print(cConfig.sounds, 190, 150)
+
+
+	if self.sel == 10 then
+		love.graphics.setColor(0, 255, 0, 255)
+	else
+		love.graphics.setColor(255, 255, 255, 255)
+	end
+
+	love.graphics.print("Music: ", 120, 160)
+	love.graphics.print(cConfig.music, 190, 160)
+
+
 	love.graphics.setColor(255, 255, 255, 255)
 
 end
 
 function mainmenu:update(dt)
 
+	local snd = nil
+
 	if vpad.report["down"] ~= 0 then
+		snd = "blip1"
 
 		self.sel = self.sel + 1
 
+		if self.sel > 10 then self.sel = 10; snd = "bump1" end
 	end
 	if vpad.report["up"] ~= 0 then
+		snd = "blip1"
 
 		self.sel = self.sel - 1
 
+		if self.sel < 1 then self.sel = 1; snd = "bump1" end
 	end
 
 	local mov = 0
@@ -320,20 +356,23 @@ function mainmenu:update(dt)
 	end
 		
 	if mov ~= 0 then
+
+		snd = "blip2"
+
 		if self.sel == 2 then
 
 			self.sel_level = self.sel_level + mov
 
-			if self.sel_level < 1 then self.sel_level = 1 end
-			if self.sel_level > table.getn(self.levels) then self.sel_level = table.getn(self.levels) end
+			if self.sel_level < 1 then self.sel_level = 1; snd = "bump1" end
+			if self.sel_level > table.getn(self.levels) then self.sel_level = table.getn(self.levels); snd = "bump1" end
 
 		end
 		if self.sel == 4 then
 
 			self.next_display = self.next_display + mov
 
-			if self.next_display < 1 then self.next_display = 1 end
-			if self.next_display > self.num_displays then self.next_display = self.num_displays end
+			if self.next_display < 1 then self.next_display = 1; snd = "bump1" end
+			if self.next_display > self.num_displays then self.next_display = self.num_displays; snd = "bump1" end
 
 			menu_res_refilter()
 
@@ -349,26 +388,52 @@ function mainmenu:update(dt)
 
 			self.next_res = self.next_res + mov
 
-			if self.next_res < 1 then self.next_res = 1 end
-			if self.next_res > self.rmax then self.next_res = self.rmax end
+			if self.next_res < 1 then self.next_res = 1; snd = "bump1" end
+			if self.next_res > self.rmax then self.next_res = self.rmax; snd = "bump1" end
 
 		end
+
+		if self.sel == 8 then
+
+			if mov < 0 and cConfig.master == 0 then snd = "bump1" end
+			if mov > 0 and cConfig.master == 100 then snd = "bump1" end
+
+			config_apply_master(cConfig, cConfig.master + mov * 10)
+		end
+		if self.sel == 9 then
+
+			if mov < 0 and cConfig.sounds == 0 then snd = "bump1" end
+			if mov > 0 and cConfig.sounds == 100 then snd = "bump1" end
+
+			config_apply_sounds(cConfig, cConfig.sounds + mov * 10)
+		end
+		if self.sel == 10 then
+
+			if mov < 0 and cConfig.music == 0 then snd = "bump1" end
+			if mov > 0 and cConfig.music == 100 then snd = "bump1" end
+
+			config_apply_music(cConfig, cConfig.music + mov * 10)
+		end
+
 	end
 
-	if self.sel < 1 then self.sel = 1 end
-	if self.sel > 7 then self.sel = 7 end
-
 	if vpad.report["jump"] ~= 0 then
+
 		if self.sel == 3 then
 			love.event.quit()
 		end
 		if self.sel == 7 then
 			menu_res_apply()
+			snd = "power1"
 		end
 		if self.sel == 1 then
 			start_game()
+			snd = "power1"
 		end
 	end
+
+	if snd then play_sound(snd) end
+
 
 	vpad:clear()
 
