@@ -70,3 +70,11 @@ end
 function string.ends(String,End)
    return End=='' or string.sub(String,-string.len(End))==End
 end
+
+function math.abs(n)
+	if n < 0 then
+		return -n,-1
+	else
+		return n,1
+	end
+end
