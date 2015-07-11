@@ -193,6 +193,64 @@ function actor_apply_control(actor, vpad)
 
 end
 
+function actor_ai(actor)
+
+	-- Not an AI!
+	if actor.ai.type == "none" then
+		return
+	end
+
+	-- Turn around
+	if actor.bumping_right == 1 then
+
+		actor.flip = -1
+
+	elseif actor.bumping_left == 1 then
+
+		actor.flip = 1
+
+	end
+
+	-- Turn around on platform edges
+	if actor.ai.ledge == "avoid" and actor.standing == 1 then
+	if actor.ledge_right == 1 then
+
+		actor.flip = -1
+
+	elseif actor.ledge_left == 1 then
+
+		actor.flip = 1
+
+	end
+	end
+
+	-- Stop and think
+	if actor.ai.think_chance > 0 then
+
+		if actor.think_delay == 0 then
+
+			actor.think_delay = actor.ai.think_delay
+
+			if math.random(1,100) < actor.ai.think_chance then
+				actor.ai_delay = actor.ai.think_duration
+				if math.random(1,100) < actor.ai.think_chance then
+					actor.flip = -actor.flip
+				end
+			end
+
+		end
+
+		if actor.ai_delay > 0 then
+			actor.move_x = 0
+			return
+		end
+
+	end
+
+	actor.move_x = actor.flip * actor.phys.walk_speed
+
+end
+
 function actor_post_move(actor, dx, dy)
 
 	if cDoll.standing_on == actor then

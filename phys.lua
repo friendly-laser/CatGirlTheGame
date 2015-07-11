@@ -325,6 +325,8 @@ function phys_step(dt)
 	local i, doll
 	for i, doll in pairs(cLevel.npcs) do
 
+		actor_ai(doll) -- hack: put somewhere else?
+
 		actor_phys(doll)
 
 	end
