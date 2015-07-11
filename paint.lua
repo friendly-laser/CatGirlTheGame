@@ -29,6 +29,13 @@ end
 
 function draw_actors()
 
+	local i, doll
+	for i, doll in pairs(cLevel.npcs) do
+
+		draw_actor(doll)
+
+	end
+
 	draw_actor(cDoll)
 
 end

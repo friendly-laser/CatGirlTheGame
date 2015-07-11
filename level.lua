@@ -8,6 +8,7 @@ function load_level(filename)
 	level.tilesets = {}
 	level.layers = {}
 	level.layers_visible = {}
+	level.npcs = {}
 	level.tileset_id = 1
 	level.cols = 3
 	level.rows = 3

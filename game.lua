@@ -30,6 +30,11 @@ function game:update(dt)
 
 	phys_loop(dt)
 
+	local i, doll
+	for i, doll in pairs(cLevel.npcs) do
+		actor_apply_anim(doll, dt)
+	end
+
 	actor_apply_anim(cDoll, dt)
 
 	camera:follow(cDoll)

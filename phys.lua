@@ -252,6 +252,12 @@ function phys_step(dt)
 	actor_phys(cDoll, physStep)
 
 	--enemies
+	local i, doll
+	for i, doll in pairs(cLevel.npcs) do
+
+		actor_phys(doll)
+
+	end
 
 	--misc
 end
