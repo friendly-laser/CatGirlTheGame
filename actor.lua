@@ -140,3 +140,14 @@ function actor_damage(actor, dmg)
 	actor.effect_delay = 2
 
 end
+
+function actor_post_move(actor, dx, dy)
+
+	if cDoll.standing_on == actor then
+
+		cDoll.force_x = cDoll.force_x + dx
+		cDoll.force_y = cDoll.force_y + dy
+
+	end
+
+end

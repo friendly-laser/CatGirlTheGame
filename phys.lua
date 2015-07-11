@@ -46,6 +46,32 @@ function box_rightof_box(box1, box2)
 	return box2.x + box2.w <= box1.x + 1
 end
 
+function actor_onCollision(actor, dx, dy, type, arg1, arg2)
+	if (dy < 0) then
+		actor.force_y = 0
+	end
+	if (dy > 0) then
+		actor.standing = 1
+	end
+	if (dx > 0) then
+		actor.bumping_right = 1
+	end
+	if (dx < 0) then
+		actor.bumping_left = 1
+	end
+end
+
+function actor_onHit(actor, hit, dx,  dy, type, arg1, arg2)
+	if (hit == "bounce") then
+		actor.force_y = -20
+	end
+	if (hit == "damage" and actor.effect == "") then
+		actor.force_y = -15
+		actor.force_x = -15 * actor.flip
+		actor_damage(actor, 1);
+	end
+end
+
 function tile_collide(actor, dx, dy)
 	local level = cLevel
 	local tilesets = cLevel.tilesets
@@ -63,14 +89,17 @@ function tile_collide(actor, dx, dy)
 	actor_box.h = actor.sprite.bound_h
 
 -- Collide with tiles
-	local tx,ty,tw,th = tiles_around_actor(level, actor);
+	local tx,ty,tw,th = tiles_around_actor(level, actor_box);
 
 	for j = ty, th do
-		for i = tx, tw do
+	for i = tx, tw do
 
-			--local tileid = level.tilemap[j][i]
-			--local mode = tilesets[level.tileset_id]['collide'][tileid]
-			local mode = level.colmap[j][i]
+		--local tileid = level.tilemap[j][i]
+		--local mode = tilesets[level.tileset_id]['collide'][tileid]
+		local mode = level.colmap[j][i]
+		local hit = level.hitmap[j][i]
+
+		if mode ~= "none" or hit ~= "none" then
 
 			local x = (i-1) * level.tileW
 			local y = (j-1) * level.tileH
@@ -82,6 +111,17 @@ function tile_collide(actor, dx, dy)
 			tile_box.h = level.tileH
 
 			local collided = false
+
+			if mode == 0 or mode == "none" then
+				if j == th - 1 then
+					if i == tx + 1 then
+						actor.ledge_left = 1
+					end
+					if i == tw - 1 then
+						actor.ledge_right = 1
+					end
+				end
+			end
 
 			if mode == 'wall' then
 				if box_vs_box(actor_box, tile_box) then
@@ -105,30 +145,14 @@ function tile_collide(actor, dx, dy)
 			end
 
 			if collided == true then
-				new_x = actor.x
-				new_y = actor.y
-
-				local hit = level.hitmap[j][i]
-				if (hit == "bounce") then
-					actor.force_y = -20
-				end
-				if (hit == "damage" and actor.effect == "") then
-					actor.force_y = -15
-					actor.force_x = -15 * actor.flip
-					actor_damage(actor, 1);
-				end
-				if (dy < 0) then
-					actor.force_y = 0
-				end
-				if (dy > 0) then
-					actor.standing = 1
-				end
+				actor.collided = true
+				actor_onHit(actor, hit, dx, dy, "tile", i, j)
+				actor_onCollision(actor, dx, dy, "tile", i, j)
 			end
-		end
-	end
 
-	actor.x = new_x
-	actor.y = new_y
+		end
+	end end
+
 end
 
 function long_collide(actor, mode, dm)
@@ -144,12 +168,22 @@ function long_collide(actor, mode, dm)
 
 	if mode == 'x' then
 		for i = 1, amnt do
+			actor.collided = false
 			tile_collide(actor, dir, 0)
+			if (actor.collided == false) then
+				actor.x = actor.x + dir
+				actor_post_move(actor, dir, 0)
+			end
 		end
 	end
 	if mode == 'y' then
 		for i = 1, amnt do
+			actor.collided = false
 			tile_collide(actor, 0, dir)
+			if (actor.collided == false) then
+				actor.y = actor.y + dir
+				actor_post_move(actor, 0, dir)
+			end
 		end
 	end
 end
@@ -163,13 +197,26 @@ function actor_phys(actor, dt)
 	end
 	--]]
 
-	-- gravity
-	if actor.force_y < 8 then
-		actor.force_y = actor.force_y + 1
+	-- intents
+	if actor.move_x > 0 and actor.force_x < actor.move_x then
+		actor.force_x = actor.move_x
 	end
+	if actor.move_x < 0 and actor.force_x > actor.move_x then
+		actor.force_x = actor.move_x
+	end
+
+	-- remember if we were "standing"
+	local was_standing = actor.standing
 
 	-- reset "standing" flag (will be set during collision)
 	actor.standing = 0
+
+	-- same for all similar flags
+	actor.bumping_right = 0
+	actor.bumping_left = 0
+	actor.ledge_right = 0
+	actor.ledge_left = 0
+	actor.standing_on = nil
 
 -- 2D Game magic:
 -- collide X and Y movements separately!
@@ -177,6 +224,27 @@ function actor_phys(actor, dt)
 -- and jumping along walls without having a vector-based collision system
 	long_collide(actor, 'x', actor.force_x)
 	long_collide(actor, 'y', actor.force_y)
+
+	-- check if we landed, set flag
+	if was_standing == 0 and actor.standing == 1 then
+		actor.landed = 1
+	end
+
+	-- friction
+	if actor.force_x < 0 then
+		actor.force_x = actor.force_x + 1
+		--if actor.force_x > 0 then actor.force_x = 0 end
+	elseif actor.force_x > 0 then
+		actor.force_x = actor.force_x - 1
+		--if actor.force_x < 0 then actor.force_x = 0 end
+	end
+
+	-- gravity
+	if actor.force_y < 8 then
+		actor.force_y = actor.force_y + 1
+		--if actor.force_y > 8 then actor.force_y = 8 end
+	end
+
 end
 
 function phys_step(dt)
