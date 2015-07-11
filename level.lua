@@ -138,10 +138,27 @@ function load_level(filename)
 
 		printf("Loading object %d `%s` (props:%p)\n", obj_id, object.name, object.props);
 
+		if object.gid then
+
+			local tileset_id = level.giant_ref_table[object.gid]
+			object.w = level.tilesets[tileset_id]['tile_w']
+			object.h = level.tilesets[tileset_id]['tile_h']
+
+			object.x = object.x
+			object.y = object.y - object.h -- hack: check other tiled-draw-modes --
+
+		end
+
 		if object.name == "Start" then
 
-			level.start_x = object.x + level.tileW * 1 -- * 4
-			level.start_y = object.y - level.tileH * 5 -- * 0
+			level.start_x = object.x
+			level.start_y = object.y
+
+		end
+
+		if object.type == "Actor" then
+
+			table.insert(level.npcs, make_actor(object.name, object.x, object.y))
 
 		end
 

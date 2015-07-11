@@ -83,6 +83,7 @@ local function getObjects(node)
 				objects[id]['y'] = tonumber(lsub.xarg.y)
 				objects[id]['w'] = tonumber(lsub.xarg.width)
 				objects[id]['h'] = tonumber(lsub.xarg.height)
+				objects[id]['gid'] = tonumber(lsub.xarg.gid)
 				objects[id]['props'] = {}
 	
 				--printf("Loaded object %s - %s\n", objects[id]['name'], objects[id]['type']);
