@@ -299,83 +299,78 @@ end
 
 function mainmenu:update(dt)
 
-	self.keywait = self.keywait - dt
-	if self.keywait <= 0 then
+	if vpad.report["down"] ~= 0 then
 
-		self.keywait = 0.1
-
-		if love.keyboard.isDown("down") then
-
-			self.sel = self.sel + 1
-
-		end
-		if love.keyboard.isDown("up") then
-
-			self.sel = self.sel - 1
-
-		end
-
-		local mov = 0
-
-		if love.keyboard.isDown("left") then
-			mov = -1
-		end
-		if love.keyboard.isDown("right") then
-			mov = 1
-		end
-		
-		if mov ~= 0 then
-			if self.sel == 2 then
-
-				self.sel_level = self.sel_level + mov
-
-				if self.sel_level < 1 then self.sel_level = 1 end
-				if self.sel_level > table.getn(self.levels) then self.sel_level = table.getn(self.levels) end
-
-			end
-			if self.sel == 4 then
-
-				self.next_display = self.next_display + mov
-
-				if self.next_display < 1 then self.next_display = 1 end
-				if self.next_display > self.num_displays then self.next_display = self.num_displays end
-
-				menu_res_refilter()
-
-			end
-			if self.sel == 6 then
-
-				self.fullscreen = not(self.fullscreen)
-				
-				menu_res_refilter()			
-
-			end
-			if self.sel == 5 then
-
-				self.next_res = self.next_res + mov			
-
-				if self.next_res < 1 then self.next_res = 1 end
-				if self.next_res > self.rmax then self.next_res = self.rmax end
-
-			end
-		end
-
-		if self.sel < 1 then self.sel = 1 end
-		if self.sel > 7 then self.sel = 7		 end
-
-		if love.keyboard.isDown("return") then
-			if self.sel == 3 then
-				love.event.quit()
-			end
-			if self.sel == 7 then
-				menu_res_apply()
-			end
-			if self.sel == 1 then
-				start_game()
-			end
-		end
+		self.sel = self.sel + 1
 
 	end
+	if vpad.report["up"] ~= 0 then
+
+		self.sel = self.sel - 1
+
+	end
+
+	local mov = 0
+
+	if vpad.report["left"] ~= 0 then
+		mov = -1
+	end
+	if vpad.report["right"] ~= 0 then
+		mov = 1
+	end
+		
+	if mov ~= 0 then
+		if self.sel == 2 then
+
+			self.sel_level = self.sel_level + mov
+
+			if self.sel_level < 1 then self.sel_level = 1 end
+			if self.sel_level > table.getn(self.levels) then self.sel_level = table.getn(self.levels) end
+
+		end
+		if self.sel == 4 then
+
+			self.next_display = self.next_display + mov
+
+			if self.next_display < 1 then self.next_display = 1 end
+			if self.next_display > self.num_displays then self.next_display = self.num_displays end
+
+			menu_res_refilter()
+
+		end
+		if self.sel == 6 then
+
+			self.fullscreen = not(self.fullscreen)
+
+			menu_res_refilter()
+
+		end
+		if self.sel == 5 then
+
+			self.next_res = self.next_res + mov
+
+			if self.next_res < 1 then self.next_res = 1 end
+			if self.next_res > self.rmax then self.next_res = self.rmax end
+
+		end
+	end
+
+	if self.sel < 1 then self.sel = 1 end
+	if self.sel > 7 then self.sel = 7 end
+
+	if vpad.report["jump"] ~= 0 then
+		if self.sel == 3 then
+			love.event.quit()
+		end
+		if self.sel == 7 then
+			menu_res_apply()
+		end
+		if self.sel == 1 then
+			start_game()
+		end
+	end
+
+	vpad:clear()
 
 end
 
