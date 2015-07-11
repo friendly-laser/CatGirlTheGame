@@ -22,9 +22,11 @@ function game:update(dt)
 		return
 	end
 
-	doll:control()
-	doll:update(dt)
-	doll:apply(cDoll)
+--	doll:control()
+--	doll:update(dt)
+--	doll:apply(cDoll)
+
+	actor_apply_control(cDoll, vpad)
 
 	phys_loop(dt)
 

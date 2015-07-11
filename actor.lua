@@ -141,6 +141,50 @@ function actor_damage(actor, dmg)
 
 end
 
+function actor_apply_control(actor, vpad)
+
+	local x_factor = vpad.report['x']
+	local move_speed = actor.phys.walk_speed
+
+	if actor.standing == 0 then
+		if actor.force_y < 0 then
+			move_speed = actor.phys.rise_speed
+		else
+			move_speed = actor.phys.fall_speed
+		end
+	end
+
+	actor.move_x = 0
+
+	if vpad.report['x'] > 0 then
+		local x_factor = math.floor(vpad.report['x'] * move_speed)
+		if x_factor == 0 then x_factor = 1 end
+		actor.move_x = x_factor
+		actor.flip = 1
+	elseif vpad.report['x'] < 0 then
+		local x_factor = math.ceil(vpad.report['x'] * move_speed)
+		if x_factor == 0 then x_factor = -1 end
+		actor.move_x = x_factor
+		actor.flip = -1
+	end
+
+	actor.spring_jump = actor.spring_jump + vpad.report['jump']
+	if (actor.spring_jump > 1) then actor.spring_jump = 1 end
+
+	if actor.spring_jump > 0 then
+		if actor.standing == 1 then
+			actor.force_y = -round(actor.spring_jump * actor.phys.jump_height)
+			actor.spring_jump = 0
+		elseif vpad.imps[1].point == 0 then
+			-- hack: XXX
+			actor.spring_jump = 0
+		end
+	end
+
+	vpad:clear()
+
+end
+
 function actor_post_move(actor, dx, dy)
 
 	if cDoll.standing_on == actor then
