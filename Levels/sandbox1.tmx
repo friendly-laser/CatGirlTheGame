@@ -20366,6 +20366,6 @@
   </data>
  </layer>
  <objectgroup name="Objects">
-  <object id="3" name="Start" type="Points" x="64" y="96" width="32" height="32"/>
+  <object id="3" name="Start" type="Points" x="64" y="32" width="32" height="32"/>
  </objectgroup>
 </map>

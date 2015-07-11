@@ -4,4 +4,9 @@
 		<phys walkspeed="6" risespeed="7" fallspeed="6"/>
 		<ai type="none"/>
 	</role>
+	<role name="snail" sprite="snail">
+		<box collide="wall" hit="none"/>
+		<phys walkspeed="1" risespeed="1" fallspeed="1"/>
+		<ai type="walk" ledge="avoid" thinkdelay="5" thinkchance="50" thinkduration="3" />
+	</role>
 </roles>
