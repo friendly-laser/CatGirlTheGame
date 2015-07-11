@@ -72,6 +72,74 @@ function actor_onHit(actor, hit, dx,  dy, type, arg1, arg2)
 	end
 end
 
+function npc_collide(actor, dx, dy)
+	local level = cLevel
+
+-- Try moving
+	local new_x, new_y
+
+	new_x = actor.x + dx
+	new_y = actor.y + dy
+
+	local actor_box = {}
+	actor_box.x = new_x + actor.sprite.bound_x
+	actor_box.y = new_y + actor.sprite.bound_y
+	actor_box.w = actor.sprite.bound_w
+	actor_box.h = actor.sprite.bound_h
+
+-- Collide with actors
+	local i, npc
+	for i, npc in pairs(level.npcs) do
+	if npc ~= actor then
+
+		local mode = npc.collide or "none"
+		local hit = npc.hit or "none"
+
+		if mode ~= "none" or hit ~= "none" then
+
+			local actor2_box = {}
+			actor2_box.x = npc.x + npc.sprite.bound_x
+			actor2_box.y = npc.y + npc.sprite.bound_y
+			actor2_box.w = npc.sprite.bound_w
+			actor2_box.h = npc.sprite.bound_h
+
+			local collided = false
+			local above = false
+
+			collided = box_vs_box(actor_box, actor2_box)
+			above = box_above_box(actor_box, actor2_box)
+
+			if mode == 'cloud' then
+				if actor.force_y > 0 and above and collided then
+					collided = true
+				else
+					collided = false
+				end
+			end
+
+			if collided == true then
+
+				if above == true then
+					actor.standing_on = npc
+				end
+
+				if mode ~= 'none' then
+					actor.collided = true
+					npc.force_x = dx
+
+					actor_onCollision(actor, dx, dy, "npc", npc)
+				end
+
+				actor_onHit(actor, hit, dx, dy, "npc", npc)
+
+			end
+
+		end
+
+	end end
+
+end
+
 function tile_collide(actor, dx, dy)
 	local level = cLevel
 	local tilesets = cLevel.tilesets
@@ -170,6 +238,7 @@ function long_collide(actor, mode, dm)
 		for i = 1, amnt do
 			actor.collided = false
 			tile_collide(actor, dir, 0)
+			npc_collide(actor, dir, 0)
 			if (actor.collided == false) then
 				actor.x = actor.x + dir
 				actor_post_move(actor, dir, 0)
@@ -180,6 +249,7 @@ function long_collide(actor, mode, dm)
 		for i = 1, amnt do
 			actor.collided = false
 			tile_collide(actor, 0, dir)
+			npc_collide(actor, 0, dir)
 			if (actor.collided == false) then
 				actor.y = actor.y + dir
 				actor_post_move(actor, 0, dir)
