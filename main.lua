@@ -63,6 +63,7 @@ function read_config()
 
 	if not(love.filesystem.exists(filename)) then
 		printf("File '%s' does not exist!\n", filename)
+		return config
 	end
 
 	for line in love.filesystem.lines(filename) do
