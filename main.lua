@@ -144,6 +144,9 @@ function love.load()
 	love.audio.play(sound)
 
 	love.graphics.setBackgroundColor(0,0,0)
+
+	vpad:init_generic()
+
 end
 
 function love.draw()
@@ -158,6 +161,8 @@ function love.draw()
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, cScaleW, cScaleH)
 
+	--vpad:draw()
+
 --[[
 	love.graphics.print(doll.spring, 500, 10)
 	love.graphics.print(doll.spring_release, 500, 20)
@@ -167,6 +172,9 @@ function love.draw()
 end
 
 function love.update(dt)
+
+	vpad:control()
+	vpad:update(dt)
 
 	loveHandler:update(dt)
 
