@@ -75,7 +75,7 @@ function actor_apply_anim(actor, dt)
 
 	-- select animation
 	if actor.standing == 1 then
-		if actor.force_x ~= 0 then
+		if actor.move_x ~= 0 then
 			-- moving on the ground
 			anim = "walk"
 		else
@@ -112,10 +112,18 @@ function actor_apply_anim(actor, dt)
 		if walk_abs > 4 then
 			dt = dt * 2
 		end
-		if walk_abs < 1 then
-			dt = dt / 4
+		if walk_abs > 8 then
+			dt = dt * 2
 		end
 	end
+
+	--update misc.
+	actor.landed = actor.landed - dt
+	if actor.landed < 0 then actor.landed = 0 end
+	actor.think_delay = actor.think_delay - dt
+	if actor.think_delay < 0 then actor.think_delay = 0 end
+	actor.ai_delay = actor.ai_delay - dt
+	if actor.ai_delay < 0 then actor.ai_delay = 0 end
 
 	--move to next frame
 	actor.anim_delay = actor.anim_delay - dt
