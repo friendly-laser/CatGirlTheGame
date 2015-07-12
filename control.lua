@@ -21,18 +21,21 @@ function VAxis.create(name)
 	vax.attack = 2  -- regular speed
 	vax.release = 4 -- back-to-zero speed
 	vax.gain = 4    -- regular speed, accellerating
+	vax.gain_knee = 0.4 -- apply gain if we haven't passed the knee
 
 	return vax
 end
 
-function VAxis:setSpeed(attack, release, gain)
+function VAxis:setSpeed(attack, release, gain, gain_knee)
 	attack = attack or 1
 	release = release or attack
 	gain = gain or release
+	gain_knee = gain_knee or 0.4
 
 	self.attack = attack
 	self.release = release
 	self.gain = gain
+	self.gain_knee = gain_knee
 end
 
 function VAxis:setPullKey(kbd1, kbd2)
@@ -78,7 +81,7 @@ function VAxis:update(dt)
 				self.ball = 0
 			end
 
-			if ball_gain > 0.4 then -- formularize?
+			if ball_gain < self.gain_knee then -- formularize?
 				speed = self.gain
 			end
 		end

@@ -2,7 +2,8 @@
 <roles>
 	<role name="catgirl" sprite="catgirl">
 		<walkspeed walk="5" jump="1" rise="6" fall="3" land="2"/>
-		<phys jumpheight="12" jumpattack="2" landwait="0.40" walkaccel="2"/>
+		<walkcontrol attack="1" gain="4" gainknee="0.7" release="4"/>
+		<phys jumpheight="12" jumpattack="2" landwait="0.40" />
 		<ai type="none"/>
 	</role>
 	<role name="snail" sprite="snail">

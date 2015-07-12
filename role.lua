@@ -7,7 +7,8 @@ function role_load_xml(node)
 
 	role.sprite_id = node.xarg.sprite
 	role.walkspeed = { walk = 1, jump = 1, rise = 1, fall = 1, land = 1 }
-	role.phys = { jump_height = 16, jump_wait = 1.0, land_wait = 1.0 }
+	role.phys = { jump_height = 16, jump_wait = 1.0, land_wait = 1.0,
+	walk_attack=1,walk_release=1,walk_gain=1,walk_gain_knee=0.4 }
 	role.ai = { type = "none" }
 	role.box = { collide = "none", hit = "none" }
 
@@ -27,7 +28,12 @@ function role_load_xml(node)
 			role.phys.jump_height = tonumber(sub.xarg.jumpheight) or 16
 			role.phys.land_wait = tonumber(sub.xarg.landwait) or 1
 			role.phys.jump_wait = tonumber(sub.xarg.jumpattack) or 1
-			role.phys.walk_attack = tonumber(sub.xarg.walkaccel) or 1
+		end
+		if (sub.label == "walkcontrol") then
+			role.phys.walk_attack = tonumber(sub.xarg.attack) or 1
+			role.phys.walk_release = tonumber(sub.xarg.release) or 1
+			role.phys.walk_gain = tonumber(sub.xarg.gain) or 1
+			role.phys.walk_gain_knee = tonumber(sub.xarg.gainknee) or 0.4
 		end
 		if (sub.label == "walkspeed") then
 			local name, default
