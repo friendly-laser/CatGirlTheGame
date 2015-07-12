@@ -210,7 +210,7 @@ function actor_apply_control(actor, vpad)
 		actor.flip = -1
 	end
 
-	actor.spring = vpad.imps[1].ball
+	actor.spring = vpad.ref.jump.ball
 
 	actor.spring_jump = actor.spring_jump + vpad.report['jump']
 	if (actor.spring_jump > 1) then actor.spring_jump = 1 end
@@ -219,7 +219,7 @@ function actor_apply_control(actor, vpad)
 		if actor.standing == 1 then
 			actor.force_y = -round(actor.spring_jump * actor.phys.jump_height)
 			actor.spring_jump = 0
-		elseif vpad.imps[1].point == 0 then
+		elseif vpad.ref.jump.point == 0 then
 			-- hack: XXX
 			actor.spring_jump = 0
 		end

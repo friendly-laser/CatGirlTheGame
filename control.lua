@@ -183,6 +183,7 @@ end
 vpad = {}
 vpad.joystick = nil -- active gamepad or nil
 vpad.report = {} -- current state of affairs
+vpad.ref = {} -- table of all virtual things by name
 vpad.axs = {} -- list of Virtual Axies
 vpad.imps = {} -- list of Virtual Impulses
 
@@ -190,12 +191,14 @@ function vpad:create_axis(name)
 	vax = VAxis.create(name)
 	table.insert(self.axs, vax)
 	self.report[name] = 0
+	self.ref[name] = vax
 	return vax
 end
 function vpad:create_impulse(name)
 	vimp = VImpulse.create(name)
 	table.insert(self.imps, vimp)
 	self.report[name] = 0
+	self.ref[name] = vimp
 	return vimp
 end
 
