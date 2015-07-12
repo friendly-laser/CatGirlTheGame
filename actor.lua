@@ -179,6 +179,7 @@ function actor_apply_control(actor, vpad)
 	local move_speed = actor.walkspeed.walk
 
 	-- hack: apply something back
+	vpad.ref.x:setSpeed(actor.phys.walk_attack)
 	vpad.ref.jump:setSpeed(actor.phys.jump_wait)
 
 	if actor.standing == 0 then

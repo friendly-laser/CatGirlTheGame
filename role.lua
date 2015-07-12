@@ -27,6 +27,7 @@ function role_load_xml(node)
 			role.phys.jump_height = tonumber(sub.xarg.jumpheight) or 16
 			role.phys.land_wait = tonumber(sub.xarg.landwait) or 1
 			role.phys.jump_wait = tonumber(sub.xarg.jumpattack) or 1
+			role.phys.walk_attack = tonumber(sub.xarg.walkaccel) or 1
 		end
 		if (sub.label == "walkspeed") then
 			local name, default
