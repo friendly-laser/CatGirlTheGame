@@ -20,6 +20,8 @@ cConfig = nil
 cRes = nil -- current resolution
 cResolutions = nil -- list of resolutions
 
+cVsync = false
+
 cBaseW = 480
 cBaseH = 270
 cScaleW = 2
@@ -156,7 +158,7 @@ end
 
 function setWindowMode()
 
-	love.window.setMode(cBaseW * cScaleW, cBaseH * cScaleH, {fullscreen=not(cRes.win), display=cRes.display} )
+	love.window.setMode(cBaseW * cScaleW, cBaseH * cScaleH, {fullscreen=not(cRes.win), display=cRes.display, vsync=cVsync} )
 	love.window.setTitle("Catgirl!")
 	love.window.setIcon( wIcon )
 
