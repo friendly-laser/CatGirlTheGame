@@ -9,8 +9,8 @@ function tiles_around_actor(level, actor)
 	local atw = math.floor((actor.x+actor.w) / level.tileW)
 	local ath = math.floor((actor.y+actor.h) / level.tileH)
 
-	atx = atx - 1
-	aty = aty - 1
+	atx = atx - 0
+	aty = aty - 0
 	atw = atw + 2
 	ath = ath + 2
 
