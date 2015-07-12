@@ -204,32 +204,30 @@ local function getLayers(node)
 			--~ print("layername",layer.name)
 
 			if (sub[1].label == "data") then
+				local i, j = 1, 1
 				if (sub[1].xarg.encoding == "csv") then
 					local csv = sub[1][1]
 					local line, val
-					local i, j = 0, -1 --should skip empty lines instead
 					for line in string.gmatch(csv, "[^\n]+") do
-						layer[j] = {}
-						i = 0
-						for val in string.gmatch(line, "%d+") do
-							layer[j][i] = tonumber(val)
-							i = i + 1
-						end
-						j = j + 1
-						if j >= layer.height then -- should skip empty lines instead
-							break
+						if line ~= "" then
+							layer[j] = {}
+							i = 1
+							for val in string.gmatch(line, "%d+") do
+								layer[j][i] = tonumber(val)
+								i = i + 1
+							end
+							j = j + 1
 						end
 					end
 				else
-					local i, j = 0, 0
 					for l, child in ipairs(sub[1]) do
-						if (i == 0) then
+						if (i == 1) then
 							layer[j] = {}
 						end
 						layer[j][i] = tonumber(child.xarg.gid)
 						i = i + 1
-						if i >= layer.width then
-							i = 0
+						if i > layer.width then
+							i = 1
 							j = j + 1
 						end
 					end

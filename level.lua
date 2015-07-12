@@ -97,7 +97,7 @@ function load_level(filename)
 		if (type(layer) == "table") then for ty,row in pairs(layer) do
 			if (type(row) == "table") then for tx,t in pairs(row) do 
 
-				map[ty + 1][tx + 1] = t -- lua arrays are 1-based, so we add +1
+				map[ty][tx] = t
 
 				-- empty tile
 				if t == 0 then
@@ -110,15 +110,15 @@ function load_level(filename)
 
 					local ctest = level.tilesets[tileset_id]['collide'][t]
 
-					if not(ctest == "none") or col[ty + 1][tx + 1] == "none" then
-						col[ty + 1][tx + 1] = ctest
+					if not(ctest == "none") or col[ty][tx] == "none" then
+						col[ty][tx] = ctest
 						--printf("Setting %d, %d to %s\n", tx, ty, ctest)
 					end
 
 					local htest = level.tilesets[tileset_id]['hit'][t]
 
-					if not(htest == "none") or hit[ty + 1][tx + 1] == "none" then
-						hit[ty + 1][tx + 1] = htest
+					if not(htest == "none") or hit[ty][tx] == "none" then
+						hit[ty][tx] = htest
 						--printf("Setting %d, %d to %s\n", tx, ty, htest)
 					end
 
