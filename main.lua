@@ -12,6 +12,8 @@ require 'mainmenu'
 
 loveHandler = mainmenu
 
+cDebug = false
+
 canvas = nil
 cLevel = nil
 cDoll = nil
@@ -211,14 +213,9 @@ function love.draw()
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas, 0, 0, 0, cScaleW, cScaleH)
 
-	--vpad:draw()
-
---[[
-	love.graphics.print(doll.spring, 500, 10)
-	love.graphics.print(doll.spring_release, 500, 20)
-	love.graphics.print(cDoll.force_y, 500, 30)
---	love.graphics.print(trif(love.keyboard.isDown(" "),"HOLD","REL"), 10, 30)
---]]
+	if cDebug== true then
+		vpad:draw()
+	end
 end
 
 function love.update(dt)
@@ -228,6 +225,12 @@ function love.update(dt)
 
 	loveHandler:update(dt)
 
+end
+
+function love.keyreleased(k)
+	if k == "1" then
+		cDebug = not(cDebug)
+	end
 end
 
 function restart_level(filename)

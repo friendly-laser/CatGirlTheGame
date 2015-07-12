@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <roles>
 	<role name="catgirl" sprite="catgirl">
-		<walkspeed walk="5" jump="1" rise="6" fall="3" land="2"/>
-		<walkcontrol attack="1" gain="4" gainknee="0.7" release="4"/>
+		<walkspeed walk="6" jump="1" rise="6" fall="3" land="2"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
 		<phys jumpheight="12" jumpattack="2" landwait="0.40" />
 		<ai type="none"/>
 	</role>
