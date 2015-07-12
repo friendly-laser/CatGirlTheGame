@@ -60,17 +60,39 @@ function Actor:setSprite(sprite_id)
 	self.h = self.sprite['frame_h']
 end
 
-function actor_apply_anim(actor, dt)
+function Actor:getAABB(dx, dy)
+	dx = dx or 0
+	dy = dy or 0
+	return {
+		x = self.sprite.bound_x + self.x + dx,
+		y = self.sprite.bound_y + self.y + dy,
+		w = self.sprite.bound_w,
+		h = self.sprite.bound_h,
+	}
+end
 
-	--update effects
-	if (actor.effect ~= "") then
-		actor.effect_delay = actor.effect_delay - dt
+function Actor:update(dt)
+--update effects
+	if (self.effect ~= "") then
+		self.effect_delay = self.effect_delay - dt
 
-		if actor.effect_delay <= 0 then
-			actor.effect_delay = 0
-			actor.effect = ""
+		if self.effect_delay <= 0 then
+			self.effect_delay = 0
+			self.effect = ""
 		end
 	end
+--update misc.
+	self.landed = self.landed - dt
+	if self.landed < 0 then self.landed = 0 end
+	self.think_delay = self.think_delay - dt
+	if self.think_delay < 0 then self.think_delay = 0 end
+	self.ai_delay = self.ai_delay - dt
+	if self.ai_delay < 0 then self.ai_delay = 0 end	
+end
+
+function actor_apply_anim(actor, dt)
+
+	actor:update(dt)
 
 	local anim
 
@@ -127,14 +149,6 @@ function actor_apply_anim(actor, dt)
 			dt = dt * 2
 		end
 	end
-
-	--update misc.
-	actor.landed = actor.landed - dt
-	if actor.landed < 0 then actor.landed = 0 end
-	actor.think_delay = actor.think_delay - dt
-	if actor.think_delay < 0 then actor.think_delay = 0 end
-	actor.ai_delay = actor.ai_delay - dt
-	if actor.ai_delay < 0 then actor.ai_delay = 0 end
 
 	--move to next frame
 	actor.anim_delay = actor.anim_delay - dt
@@ -269,17 +283,50 @@ function actor_ai(actor)
 
 	end
 
-	actor.move_x = actor.flip * actor.phys.walk_speed
+	actor.move_x = actor.flip * actor.walkspeed.walk
 
 end
 
-function actor_post_move(actor, dx, dy)
+function Actor:moveTo(nx, ny)
+	local dx, dy
+	dx = nx - self.x
+	dy = ny - self.y
+	self.x = nx
+	self.y = ny
+	self:onMove(dx, dy)
+end
 
-	if cDoll.standing_on == actor then
+function Actor:moveBy(dx, dy)
+	self.x = self.x + dx
+	self.y = self.y + dy
+	self:onMove(dx, dy)
+end
+
+function Actor:onMove(dx, dy)
+
+	if cDoll.standing_on == self then
 
 		cDoll.force_x = cDoll.force_x + dx
 		cDoll.force_y = cDoll.force_y + dy
 
 	end
 
+end
+
+-- improtant: hit "event" handler
+function Actor:onHit(actor, hit, dx,  dy, htype, arg1, arg2)
+	if (hit == "bounce") then
+		actor.force_y = -20
+	end
+	if (hit == "damage" and actor.effect == "") then
+		actor.force_y = -15
+		actor.force_x = -15 * actor.flip
+		actor_damage(actor, 1);
+	end
+	if (htype == "object" and not(arg1.taken)) then
+		local obj = arg1
+		obj.visible = 0
+		obj.taken = true
+		play_sound("coin2")
+	end
 end

@@ -46,22 +46,21 @@ function box_rightof_box(box1, box2)
 	return box2.x + box2.w <= box1.x + 1
 end
 
-function actor_onCollision(actor, dx, dy, type, arg1, arg2)
-	if (dy < 0) then
-		actor.force_y = 0
-	end
-	if (dy > 0) then
-		actor.standing = 1
-	end
-	if (dx > 0) then
-		actor.bumping_right = 1
-	end
-	if (dx < 0) then
-		actor.bumping_left = 1
-	end
+function actor_onCollision(actor, dx,  dy)
+		if (dy < 0) then
+			actor.force_y = 0
+		end
+		if (dy > 0) then
+			actor.standing = 1
+		end
+		if (dx > 0) then
+			actor.bumping_right = 1
+		end
+		if (dx < 0) then
+			actor.bumping_left = 1
+		end
 end
-
-function actor_onHit(actor, hit, dx,  dy, type, arg1, arg2)
+function actor_onHit(actor, hit, dx,  dy, htype, arg1, arg2)
 	if (hit == "bounce") then
 		actor.force_y = -20
 	end
@@ -70,6 +69,70 @@ function actor_onHit(actor, hit, dx,  dy, type, arg1, arg2)
 		actor.force_x = -15 * actor.flip
 		actor_damage(actor, 1);
 	end
+	if (htype == "object" and not(arg1.taken)) then
+		local obj = arg1
+		obj.visible = 0
+		obj.taken = true
+		play_sound("coin2")
+	end
+end
+
+function obj_collide(actor, dx, dy)
+	local level = cLevel
+
+-- Try moving
+	local actor_box = actor:getAABB(dx, dy)
+
+-- Collide with objects
+	local i, obj
+	for i, obj in pairs(level.objects) do
+	--if ... then
+
+		local mode = obj.props.collide or "none"
+		local hit = obj.props.hit or "none"
+
+		if mode ~= "none" or hit ~= "none" then
+
+			local obj_box = {}
+			obj_box.x = obj.x
+			obj_box.y = obj.y
+			obj_box.w = obj.w
+			obj_box.h = obj.h
+
+			local collided = false
+			local above = false
+
+			collided = box_vs_box(actor_box, obj_box)
+			above = box_above_box(actor_box, obj_box)
+
+			if mode == 'cloud' then
+				if actor.force_y > 0 and above and collided then
+					collided = true
+				else
+					collided = false
+				end
+			end
+
+			if collided == true then
+
+				if above == true then
+					actor.standing_on = obj
+				end
+
+				if mode ~= 'none' then
+					actor.collided = true
+					--obj.force_x = dx
+					--actor_onCollision(actor, dx, dy, "object", obj)
+				end
+
+				actor_onHit(actor, hit, dx, dy, "object", obj)
+
+			end
+
+		end
+	--end 
+	end
+
 end
 
 function npc_collide(actor, dx, dy)
@@ -127,7 +190,7 @@ function npc_collide(actor, dx, dy)
 					actor.collided = true
 					npc.force_x = dx
 
-					actor_onCollision(actor, dx, dy, "npc", npc)
+					--actor_onCollision(actor, dx, dy, "npc", npc)
 				end
 
 				actor_onHit(actor, hit, dx, dy, "npc", npc)
@@ -167,29 +230,22 @@ function tile_collide(actor, dx, dy)
 		local mode = level.colmap[j][i]
 		local hit = level.hitmap[j][i]
 
+		if mode == "none" then
+			if j == th - 1 then
+				if i == tx + 1 then actor.ledge_left = 1 end
+				if i == tw - 1 then	actor.ledge_right = 1 end
+			end
+		end
+
 		if mode ~= "none" or hit ~= "none" then
 
-			local x = (i-1) * level.tileW
-			local y = (j-1) * level.tileH
-
 			local tile_box = {}
-			tile_box.x = x
-			tile_box.y = y
+			tile_box.x = (i-1) * level.tileW
+			tile_box.y = (j-1) * level.tileH
 			tile_box.w = level.tileW
 			tile_box.h = level.tileH
 
 			local collided = false
-
-			if mode == 0 or mode == "none" then
-				if j == th - 1 then
-					if i == tx + 1 then
-						actor.ledge_left = 1
-					end
-					if i == tw - 1 then
-						actor.ledge_right = 1
-					end
-				end
-			end
 
 			if mode == 'wall' then
 				if box_vs_box(actor_box, tile_box) then
@@ -215,7 +271,7 @@ function tile_collide(actor, dx, dy)
 			if collided == true then
 				actor.collided = true
 				actor_onHit(actor, hit, dx, dy, "tile", i, j)
-				actor_onCollision(actor, dx, dy, "tile", i, j)
+				--actor_onCollision(actor, dx, dy, "tile", i, j)
 			end
 
 		end
@@ -224,40 +280,49 @@ function tile_collide(actor, dx, dy)
 end
 
 function long_collide(actor, mode, dm)
-	local dir = 1
-	local amnt = 1
 
 	if dm == 0 then return end
 
-	amnt = math.abs(dm)
-	if dm < 0 then dir = -1 else dir = 1 end
+	local amnt, dir = math.abs(dm)
+	local dx, dy, i = 0, 0, 0
 
 	--if amnt > 8 then amnt = 8 end
 
-	if mode == 'x' then
-		for i = 1, amnt do
-			actor.collided = false
-			tile_collide(actor, dir, 0)
-			npc_collide(actor, dir, 0)
-			if (actor.collided == false) then
-				actor.x = actor.x + dir
-				actor_post_move(actor, dir, 0)
-			end
+	if mode == 'x' then	dx = dir end
+	if mode == 'y' then dy = dir end
+
+	local collided = false
+
+	for i = 1, amnt do
+		actor.collided = false
+		tile_collide(actor, dx, dy)
+		npc_collide(actor, dx, dy)
+		obj_collide(actor, dx, dy)
+		if (actor.collided == false) then
+			actor:moveBy(dx, dy)
+		else
+			break
 		end
 	end
-	if mode == 'y' then
-		for i = 1, amnt do
-			actor.collided = false
-			tile_collide(actor, 0, dir)
-			npc_collide(actor, 0, dir)
-			if (actor.collided == false) then
-				actor.y = actor.y + dir
-				actor_post_move(actor, 0, dir)
-			end
+
+	if actor.collided == true then
+		if (dy < 0) then
+			actor.force_y = 0
+		end
+		if (dy > 0) then
+			actor.standing = 1
+		end
+		if (dx > 0) then
+			actor.bumping_right = 1
+		end
+		if (dx < 0) then
+			actor.bumping_left = 1
 		end
 	end
+
 end
 
+	
 function actor_phys(actor, dt)
 
 	--[[ jump
