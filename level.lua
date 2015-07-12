@@ -79,8 +79,8 @@ function load_level(filename)
 	animation_hack(level, tilesets)
 
 
-	level.colmap = make_matrix(level.cols, level.rows)
-	level.hitmap = make_matrix(level.cols, level.rows)
+	level.colmap = make_matrix(level.cols, level.rows, "none")
+	level.hitmap = make_matrix(level.cols, level.rows, "none")
 
 	local col = level.colmap
 	local hit = level.hitmap

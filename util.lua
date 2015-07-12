@@ -53,12 +53,14 @@ function ini1dump(table)
 	return ret
 end
 
-function make_matrix(w, h)
+function make_matrix(w, h, val)
 	local grid = {}
+	local j, i
+	val = val or 0
 	for j = 1, h do
 		grid[j] = {}
 		for i = 1, w do
-			grid[j][i] = 0 -- Fill the values here
+			grid[j][i] = val
 		end
 	end
 	return grid
