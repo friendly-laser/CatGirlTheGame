@@ -66,6 +66,10 @@ function make_matrix(w, h, val)
 	return grid
 end
 
+function string.trim(str)
+	return str:match'^%s*(.*%S)' or ''
+end
+
 function string.starts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
 end

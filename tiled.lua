@@ -209,7 +209,7 @@ local function getLayers(node)
 					local csv = sub[1][1]
 					local line, val
 					for line in string.gmatch(csv, "[^\n]+") do
-						if line ~= "" then
+						if string.trim(line) ~= "" then
 							layer[j] = {}
 							i = 1
 							for val in string.gmatch(line, "%d+") do
