@@ -158,7 +158,7 @@ function actor_apply_anim(actor, dt)
 	end
 
 	if actor.frame > actor.sprite['max_frames'][actor.anim] then
-		actor.frame = 1
+		actor.frame = actor.sprite['reframe'][actor.anim]
 	end
 
 	if actor.anim_delay <= 0 then

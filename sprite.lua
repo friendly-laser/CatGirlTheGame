@@ -9,6 +9,7 @@ function sprite_load_xml(node)
 	spr['frames'] = {}
 	spr['delays'] = {}
 	spr['max_frames'] = {}
+	spr['reframe'] = {}
 
 	local tileW = frameW
 	local tileH = frameH
@@ -22,16 +23,20 @@ function sprite_load_xml(node)
 
 	for a, sub in ipairs(node) do
 		if (sub.label == "box") then
-			spr['bound_x'] = tonumber(sub.xarg.x)
-			spr['bound_y'] = tonumber(sub.xarg.y)
-			spr['bound_w'] = tonumber(sub.xarg.w)
-			spr['bound_h'] = tonumber(sub.xarg.h)
+			spr['bound_x'] = tonumber(sub.xarg.x) or 0
+			spr['bound_y'] = tonumber(sub.xarg.y) or 0
+			spr['bound_w'] = tonumber(sub.xarg.w) or tileW
+			spr['bound_h'] = tonumber(sub.xarg.h) or tileH
 		end
 		if (sub.label == "animation") then
-			local anim, row, col, maxf, delay =
-				sub.xarg.name, tonumber(sub.xarg.row), tonumber(sub.xarg.col),
-				tonumber(sub.xarg.frames), tonumber(sub.xarg.delay)
-			fill_anim_range(spr, anim, (col-1)* tileW, (row-1) * tileH, tileW, tileH, maxf, delay)
+			local anim = sub.xarg.name
+			local row = tonumber(sub.xarg.row) or 1
+			local col = tonumber(sub.xarg.col) or 1
+			local maxf = tonumber(sub.xarg.frames) or 1
+			local delay = tonumber(sub.xarg.delay) or 1.0
+			local reframe = tonumber(sub.xarg.reframe) or 1
+
+			fill_anim_range(spr, anim, (col-1) * tileW, (row-1) * tileH, tileW, tileH, maxf, delay, reframe)
 		end
 	end
 
@@ -84,7 +89,7 @@ function load_sprite(id, filename, tileW, tileH)
 	return spr
 end
 
-function fill_anim_range(spr, name, base_x, base_y, tileW, tileH, maxf, tDelay)
+function fill_anim_range(spr, name, base_x, base_y, tileW, tileH, maxf, tDelay, reframe)
 	local i, x
 
 	local W, H = spr['image']:getWidth(), spr['image']:getHeight()
@@ -100,4 +105,5 @@ function fill_anim_range(spr, name, base_x, base_y, tileW, tileH, maxf, tDelay)
 	end
 
 	spr['max_frames'][name] = maxf
+	spr['reframe'][name] = reframe or 1
 end
