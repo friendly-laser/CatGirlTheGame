@@ -6,7 +6,8 @@ function role_load_xml(node)
 	local id, sprite = node.xarg.name, node.xarg.sprite
 
 	role.sprite_id = node.xarg.sprite
-	role.phys = { walk_speed = 1, rise_speed = 1, fall_speed = 1, jump_height = 32 }
+	role.walkspeed = { walk = 1, jump = 1, rise = 1, fall = 1, land = 1 }
+	role.phys = { jump_height = 16, jump_wait = 1.0, land_wait = 1.0 }
 	role.ai = { type = "none" }
 	role.box = { collide = "none", hit = "none" }
 
@@ -23,12 +24,15 @@ function role_load_xml(node)
 			role.ai.think_chance = tonumber(sub.xarg.thinkchance) or 0
 		end
 		if (sub.label == "phys") then
-			role.phys.walk_speed = tonumber(sub.xarg.walkspeed) or 1
-			role.phys.rise_speed = tonumber(sub.xarg.risespeed) or 1
-			role.phys.fall_speed = tonumber(sub.xarg.fallspeed) or 1
 			role.phys.jump_height = tonumber(sub.xarg.jumpheight) or 16
 			role.phys.land_wait = tonumber(sub.xarg.landwait) or 1
-			role.phys.land_speed = tonumber(sub.xarg.landspeed) or 1
+			role.phys.jump_wait = tonumber(sub.xarg.jumpattack) or 1
+		end
+		if (sub.label == "walkspeed") then
+			local name, default
+			for name, default in pairs(role.walkspeed) do
+				role.walkspeed[name] = tonumber(sub.xarg[name]) or default
+			end
 		end
 	end
 

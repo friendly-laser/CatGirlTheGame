@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <roles>
 	<role name="catgirl" sprite="catgirl">
-		<phys walkspeed="5" risespeed="6" fallspeed="3" jumpheight="12" landwait="0.40" landspeed="2" />
+		<walkspeed walk="5" jump="1" rise="6" fall="3" land="2"/>
+		<phys jumpheight="12" jumpattack="2" landwait="0.40" />
 		<ai type="none"/>
 	</role>
 	<role name="snail" sprite="snail">

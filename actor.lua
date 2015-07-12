@@ -42,6 +42,7 @@ function Actor:setRole(role_id)
 	end
 	self.role_id = role_id
 	self.sprite_id = roles[role_id].sprite_id
+	self.walkspeed = roles[role_id].walkspeed
 	self.phys = roles[role_id].phys
 	self.collide = roles[role_id].box.collide
 	self.hit = roles[role_id].box.hit
@@ -161,18 +162,23 @@ end
 
 function actor_apply_control(actor, vpad)
 
-	local x_factor = vpad.report['x']
-	local move_speed = actor.phys.walk_speed
+	local move_speed = actor.walkspeed.walk
+
+	-- hack: apply something back
+	vpad.ref.jump:setSpeed(actor.phys.jump_wait)
 
 	if actor.standing == 0 then
 		if actor.force_y < 0 then
-			move_speed = actor.phys.rise_speed
+			move_speed = actor.walkspeed.rise
 		else
-			move_speed = actor.phys.fall_speed
+			move_speed = actor.walkspeed.fall
 		end
 	else
+		if actor.spring > 0 then
+			move_speed = actor.walkspeed.jump
+		end
 		if actor.landed > 0 then
-			move_speed = actor.phys.land_speed
+			move_speed = actor.walkspeed.land
 		end
 	end
 
