@@ -50,12 +50,14 @@ function load_sounds()
 		if string.ends(file, ".wav") then
 			local short = string.sub(file,1,string.len(file)-4) -- remove extension
 			local fullname = dir .. '/' .. file
-			sounds[short] = love.audio.newSource(fullname)
+			sounds[short] = love.sound.newSoundData(fullname)
 		end
 	end
 end
 function play_sound(name)
-	love.audio.play(sounds[name])
+	local source = love.audio.newSource(sounds[name])
+	source:setVolume(cConfig.sounds / 100)
+	love.audio.play(source)
 end
 
 
@@ -74,7 +76,7 @@ function config_apply_sounds(config, vol)
 	local n, sound
 	local sound_factor = config.sounds / 100
 	for n, sound in pairs(sounds) do
-		sound:setVolume(sound_factor)
+		--sound:setVolume(sound_factor)
 	end
 end
 function config_apply_music(config, vol)
