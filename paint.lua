@@ -1,3 +1,8 @@
+function draw_rect(box)
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.rectangle("line", box.x, box.y, box.w, box.h)
+end
+
 function draw_backgrounds()
 
 	for id, bg in pairs(cLevel.backgrounds) do
