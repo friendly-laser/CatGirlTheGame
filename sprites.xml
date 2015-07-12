@@ -4,10 +4,10 @@
 		<box x="20" y="8" w="24" h="40"/>
 		<animation name="idle" delay="0.2000" row="1" col="1" frames="10"/>
 		<animation name="walk" delay="0.1000" row="2" col="1" frames="8"/>
-		<animation name="jump" delay="0.07" row="3" col="1" frames="5"/>
+		<animation name="jump" delay="0.2" row="3" col="1" frames="5"/>
 		<animation name="rise" delay="0.07" row="3" col="6" frames="4"/>
 		<animation name="vrise" delay="0.07" row="3" col="6" frames="4"/>
-		<animation name="fall" delay="0.07" row="3" col="10" frames="5"/>
+		<animation name="fall" delay="0.07" row="3" col="10" frames="5" reframe="2"/>
 		<animation name="land" delay="0.20" row="3" col="15" frames="2"/>
 	</sprite>
 	<sprite name="snail" image="Sprites/sandbox/snail_3.png" framewidth="32" frameheight="32">
