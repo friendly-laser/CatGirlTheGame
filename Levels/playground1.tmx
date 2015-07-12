@@ -647,7 +647,7 @@
     <property name="collide" value="wall"/>
    </properties>
   </object>
-  <object id="5" name="Start" type="Points" x="552" y="664" width="64" height="64"/>
+  <object id="5" name="Start" type="Points" x="392" y="928" width="64" height="64"/>
  </objectgroup>
  <objectgroup name="coins">
   <properties>
@@ -661,7 +661,7 @@
   <object id="12" name="Coin" gid="4097" x="312" y="920" width="16" height="16"/>
  </objectgroup>
  <objectgroup name="enemies">
-  <object id="38" name="snail" type="Actor" x="480" y="800" width="24" height="32">
+  <object id="38" name="snail" type="Actor" x="560" y="768" width="24" height="32">
    <properties>
     <property name="hit" value="damage"/>
    </properties>
