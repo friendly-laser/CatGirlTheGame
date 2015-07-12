@@ -12,6 +12,31 @@ function draw_backgrounds()
 
 end
 
+function draw_object(obj)
+	local level = cLevel
+	local tilesets = level.tilesets
+	local tileid = obj.gid
+	local x = obj.x
+	local y = obj.y
+
+	if tileid > 0 then
+
+		local tileset_id = level.giant_ref_table[tileid]
+
+		love.graphics.draw(tilesets[tileset_id]['image'], tilesets[tileset_id]['quads'][tileid], x, y)
+
+	end
+end
+
+function draw_objects()
+	local i, obj
+	for i, obj in pairs(cLevel.objects) do
+		if obj.visible ==  1 then
+			draw_object(obj)
+		end
+	end
+end
+
 function draw_actor(actor)
 	sprite = actor.sprite
 	frame = sprite['frames'][actor.anim][actor.frame]
@@ -81,6 +106,8 @@ function draw_frame()
 			draw_tiles(cLevel.layers[id])
 		end
 	end
+
+	draw_objects()
 
 	draw_actors()
 

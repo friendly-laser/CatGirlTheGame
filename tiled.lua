@@ -79,13 +79,14 @@ local function getObjects(node)
 				objects[id] = {}
 				objects[id]['name'] = lsub.xarg.name or ""
 				objects[id]['type'] = lsub.xarg.type or ""
+				objects[id]['visible'] = tonumber(lsub.xarg.visible) or 1
 				objects[id]['x'] = tonumber(lsub.xarg.x)
 				objects[id]['y'] = tonumber(lsub.xarg.y)
 				objects[id]['w'] = tonumber(lsub.xarg.width)
 				objects[id]['h'] = tonumber(lsub.xarg.height)
 				objects[id]['gid'] = tonumber(lsub.xarg.gid)
 				objects[id]['props'] = {}
-	
+
 				--printf("Loaded object %s - %s\n", objects[id]['name'], objects[id]['type']);
 
 				if lsub[1] and lsub[1].label == "properties" then

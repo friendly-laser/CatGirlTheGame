@@ -9,6 +9,7 @@ function load_level(filename)
 	level.layers = {}
 	level.layers_visible = {}
 	level.npcs = {}
+	level.objects = {}
 	level.tileset_id = 1
 	level.cols = 3
 	level.rows = 3
@@ -147,6 +148,8 @@ function load_level(filename)
 			object.x = object.x
 			object.y = object.y - object.h -- hack: check other tiled-draw-modes --
 
+			object.props.collide = level.tilesets[tileset_id]['collide'][object.gid]
+			object.props.hit = level.tilesets[tileset_id]['hit'][object.gid]
 		end
 
 		if object.name == "Start" then
@@ -160,8 +163,18 @@ function load_level(filename)
 
 			table.insert(level.npcs, make_actor(object.name, object.x, object.y))
 
-		end
+			local id = table.getn(level.npcs)
+			level.npcs[id].collide = object.props.collide
+			level.npcs[id].hit = object.props.hit
 
+		--elseif object.type == "" then
+
+		elseif object.gid then
+
+			table.insert(level.objects, object)
+
+		end
+--[[
 		if object.props.collide then
 
 			local i, j, x, y, w, h
@@ -170,14 +183,20 @@ function load_level(filename)
 			w = math.floor(object.w / level.tileW)
 			h = math.floor(object.h / level.tileH)
 
+			if x < 1 then x = 1 end
+			if y < 1 then y = 1 end
+			if x + w > level.cols then w = level.cols - x end
+			if y + h > level.rows then h = level.rows - y end
+
 			for j = 0, h-1 do
 			for i = 0, w-1 do
 
 				col[y + j][x + i] = object.props.collide
 
 			end end
-		end
 
+		end
+--]]
 	end
 
 	return level
@@ -299,6 +318,46 @@ function anim_all_tiles(dt)
 
 	for id = 1, num_layers do
 		anim_tiles(cLevel.layers[id], dt)
+	end
+end
+
+function anim_object(obj, dt)
+
+	local t = obj.gid
+
+	local tileset_id = cLevel.giant_ref_table[t]
+
+	local ts = cLevel.tilesets[tileset_id]
+
+	if ts['anim_delay'][t] then
+
+		if not(obj.anim_delay) then
+			obj.anim_delay = ts['anim_delay'][t]
+		end
+
+		obj.anim_delay = obj.anim_delay - dt
+
+		if obj.anim_delay <= 0 then
+
+			obj.anim_delay = ts['anim_delay'][t]
+
+			local mov_ind
+
+			mov_ind = ts['tile_pitch'] * ts['anim_y'][t] + ts['anim_x'][t]
+
+			--printf("!!!!!! mov_ind = %d [%f]\n", mov_ind, ts['anim_delay'][t])
+
+			obj.gid = t + mov_ind
+
+		end
+	end
+end
+
+function anim_objects(dt)
+	local num_objects = table.getn(cLevel.objects)
+
+	for id = 1, num_objects do
+		anim_object(cLevel.objects[id], dt)
 	end
 end
 

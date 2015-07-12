@@ -41,4 +41,5 @@ function game:update(dt)
 
 	anim_all_tiles(dt)
 
+	anim_objects(dt)
 end
