@@ -1,9 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <roles>
-	<role name="catgirl" sprite="catgirl">
-		<walkspeed walk="6" jump="1" rise="6" fall="3" land="2"/>
+	<role name="catgirl-1" sprite="catgirl-1">
+		<walkspeed walk="6" jump="2" rise="5" fall="4" land="0"/>
 		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
-		<phys jumpheight="12" jumpattack="2" landwait="0.40" />
+		<jumpcontrol attack="1" gain="8" gainknee="" release=""/>
+		<phys jumpheight="12" landwait="0.40" />
+		<ai type="none"/>
+	</role>
+	<role name="catgirl-2" sprite="catgirl-2">
+		<walkspeed walk="6" jump="2" rise="5" fall="4" land="0"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
+		<jumpcontrol attack="2" gain="8" gainknee="" release=""/>
+		<phys jumpheight="12" landwait="0.40" gravity="0.8" friction="0.8"/>
+		<ai type="none"/>
+	</role>
+	<role name="catgirl-3" sprite="catgirl-3">
+		<walkspeed walk="6" jump="2" rise="5" fall="4" land="0"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
+		<jumpcontrol attack="1" gain="8" gainknee="" release=""/>
+		<phys jumpheight="16" landwait="0.40" gravity="1" friction="1"/>
+		<ai type="none"/>
+	</role>
+	<role name="catgirl-4" sprite="catgirl-4">
+		<walkspeed walk="5" jump="2" rise="4" fall="4" land="0"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
+		<jumpcontrol attack="4" gain="8" gainknee="" release=""/>
+		<phys jumpheight="12" landwait="0.40" gravity="1" friction="0.1"/>
+		<ai type="none"/>
+	</role>
+	<role name="catgirl-5" sprite="catgirl-5">
+		<walkspeed walk="6" jump="2" rise="5" fall="5" land="0"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
+		<jumpcontrol attack="8" gain="8" gainknee="" release=""/>
+		<phys jumpheight="12" landwait="0.40" gravity="1" friction="1"/>
+		<ai type="none"/>
+	</role>
+	<role name="catgirl-6" sprite="catgirl-6">
+		<walkspeed walk="6" jump="6" rise="6" fall="6" land="0"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
+		<jumpcontrol attack="8" gain="8" gainknee="" release=""/>
+		<phys jumpheight="12" landwait="0.40" gravity="1" friction="1"/>
+		<ai type="none"/>
+	</role>
+	<role name="catgirl-7" sprite="catgirl-7">
+		<walkspeed walk="7" jump="7" rise="7" fall="7" land="0"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
+		<jumpcontrol attack="8" gain="8" gainknee="" release=""/>
+		<phys jumpheight="12" landwait="0.40" gravity="1" friction="1"/>
+		<ai type="none"/>
+	</role>
+	<role name="catgirl-8" sprite="catgirl-8">
+		<walkspeed walk="8" jump="8" rise="8" fall="8" land="0"/>
+		<walkcontrol attack="0.25" gain="4" gainknee="0.7" release="6"/>
+		<jumpcontrol attack="8" gain="8" gainknee="" release=""/>
+		<phys jumpheight="12" landwait="0.40" gravity="0.8" friction="0.5"/>
 		<ai type="none"/>
 	</role>
 	<role name="snail" sprite="snail">

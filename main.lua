@@ -228,7 +228,16 @@ function love.update(dt)
 end
 
 function love.keyreleased(k)
-	if k == "1" then
+	if k == "1" then cDoll:setRole("catgirl-1") end
+	if k == "2" then cDoll:setRole("catgirl-2") end
+	if k == "3" then cDoll:setRole("catgirl-3") end	
+	if k == "4" then cDoll:setRole("catgirl-4") end	
+	if k == "5" then cDoll:setRole("catgirl-5") end	
+	if k == "6" then cDoll:setRole("catgirl-6") end	
+	if k == "7" then cDoll:setRole("catgirl-7") end
+	if k == "8" then cDoll:setRole("catgirl-8") end	
+	if k == "9" then cDoll:setRole("snail") ; cDoll:setSprite("snail") end	
+	if k == "0" then
 		cDebug = not(cDebug)
 	end
 end
@@ -239,7 +248,7 @@ function restart_level(filename)
 
 	update_BGQuads(cLevel)
 
-	cDoll = make_actor("catgirl", cLevel.start_x, cLevel.start_y)
+	cDoll = make_actor("catgirl-1", cLevel.start_x, cLevel.start_y)
 
 	camera:follow(cDoll)
 

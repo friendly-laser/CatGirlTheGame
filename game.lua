@@ -12,7 +12,7 @@ function game:draw()
 	camera:unset()
 
 	love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 0, 0)
-
+	love.graphics.print("girl: "..cDoll.role_id, 0, 10)	
 end
 
 function game:update(dt)
