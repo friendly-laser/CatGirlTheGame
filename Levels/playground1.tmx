@@ -653,12 +653,12 @@
   <properties>
    <property name="hit" value="take"/>
   </properties>
-  <object id="7" name="Coin" gid="4097" x="232" y="920" width="16" height="16"/>
-  <object id="8" name="Coin" gid="4097" x="248" y="904" width="16" height="16"/>
-  <object id="9" name="Coin" gid="4097" x="264" y="888" width="16" height="16"/>
-  <object id="10" name="Coin" gid="4097" x="280" y="888" width="16" height="16"/>
-  <object id="11" name="Coin" gid="4097" x="296" y="904" width="16" height="16"/>
-  <object id="12" name="Coin" gid="4097" x="312" y="920" width="16" height="16"/>
+  <object id="7" name="Coin" gid="4097" x="232" y="904" width="16" height="16"/>
+  <object id="8" name="Coin" gid="4097" x="248" y="888" width="16" height="16"/>
+  <object id="9" name="Coin" gid="4097" x="264" y="872" width="16" height="16"/>
+  <object id="10" name="Coin" gid="4097" x="280" y="872" width="16" height="16"/>
+  <object id="11" name="Coin" gid="4097" x="296" y="888" width="16" height="16"/>
+  <object id="12" name="Coin" gid="4097" x="312" y="904" width="16" height="16"/>
  </objectgroup>
  <objectgroup name="enemies">
   <object id="38" name="snail" type="Actor" x="560" y="768" width="24" height="32">
