@@ -35,8 +35,8 @@ function camera:follow(actor)
 	local w = self.w
 	local h = self.h
 
-	local x = actor.x - w / 2
-	local y = actor.y - h / 2
+	local x = actor.x + actor.sprite.origin_x - w / 2
+	local y = actor.y + actor.sprite.bound_h - h / 2
 
 	local max_w = cLevel.cols * cLevel.tileW
 	local max_h = cLevel.rows * cLevel.tileH
