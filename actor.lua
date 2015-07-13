@@ -19,6 +19,7 @@ function make_actor(role_id, x, y, sprite_id)
 	actor.force_x = 0
 	actor.force_y = 0
 	actor.move_x = 0
+	actor.spring = 0
 	actor.spring_jump = 0
 	actor.landed = 0
 	actor.ledge_right = 0
@@ -180,7 +181,7 @@ function actor_apply_control(actor, vpad)
 
 	-- hack: apply something back
 	vpad.ref.x:setSpeed(actor.phys.walk_attack, actor.phys.walk_release, actor.phys.walk_gain, actor.phys.walk_gain_knee)
-	vpad.ref.jump:setSpeed(actor.phys.jump_wait)
+	vpad.ref.jump:setSpeed(actor.phys.jump_attack, actor.phys.jump_release, actor.phys.jump_gain, actor.phys.jump_gain_knee)
 
 	if actor.standing == 0 then
 		if actor.force_y < 0 then

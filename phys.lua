@@ -367,16 +367,16 @@ function actor_phys(actor, dt)
 
 	-- friction
 	if actor.force_x < 0 then
-		actor.force_x = actor.force_x + 1
+		actor.force_x = actor.force_x + actor.phys.friction
 		--if actor.force_x > 0 then actor.force_x = 0 end
 	elseif actor.force_x > 0 then
-		actor.force_x = actor.force_x - 1
+		actor.force_x = actor.force_x - actor.phys.friction
 		--if actor.force_x < 0 then actor.force_x = 0 end
 	end
 
 	-- gravity
 	if actor.force_y < 8 then
-		actor.force_y = actor.force_y + 1
+		actor.force_y = actor.force_y + actor.phys.gravity
 		--if actor.force_y > 8 then actor.force_y = 8 end
 	end
 

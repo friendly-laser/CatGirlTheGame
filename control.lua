@@ -133,14 +133,16 @@ function VImpulse:setJoystickAxis(jax)
 	self.joy_axis = jax
 end
 
-function VImpulse:setSpeed(attack, release, gain)
+function VImpulse:setSpeed(attack, release, gain, gain_knee)
 	attack = attack or 1
 	release = release or attack
 	gain = gain or release
+	gain_knee = gain_knee or 0.4
 
 	self.attack = attack
 	self.release = release
 	self.gain = gain
+	self.gain_knee = gain_knee
 end
 
 
